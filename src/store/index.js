@@ -8,7 +8,8 @@ export default new Vuex.Store({
     s3config: {
       accessKey: undefined,
       secretKey: undefined,
-      endpoint: undefined
+      endpoint: undefined,
+      bucket: undefined
     }
   },
   getters: {
@@ -28,6 +29,7 @@ export default new Vuex.Store({
       var accessKey = config.accessKey
       var secretKey = config.secretKey
       var endpoint = config.endpoint
+      var bucket = config.bucket
       var o
 
       try {
@@ -46,6 +48,10 @@ export default new Vuex.Store({
 
       if (secretKey) {
         o.secretKey = state.s3config.secretKey = secretKey
+      }
+
+      if (bucket) {
+        o.bucket = state.s3config.bucket = bucket
       }
 
       if (endpoint) {

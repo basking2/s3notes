@@ -19,8 +19,11 @@ const utilEvent = require('../util/event')
 
 const ace = require('ace-builds/src-min-noconflict/ace')
 
+
 // This needs only be required, not bound to a variable.
 require('ace-builds/webpack-resolver')
+
+const daos3 = require('../dao/s3')
 
 export default {
     props: {
