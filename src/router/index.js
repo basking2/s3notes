@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import S3Credentials from '../views/S3Credentials.vue'
+import Editor from '../views/Editor.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,17 @@ const routes = [
     path: '/s3credentials',
     name: 'S3Credentials',
     component: S3Credentials
+  },
+  {
+    path: '/editor/:file*',
+    name: 'Editor',
+    component: Editor,
+    props: route => {
+      return {
+        // Props go here.
+        file: route.params.file
+      }
+    }
   }
 ]
 
