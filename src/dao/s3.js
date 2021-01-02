@@ -4,9 +4,17 @@ const AWS = require('aws-sdk')
 function mks3(opts) {
     const s3 = new AWS.S3({
         accessKeyId: opts.accessKey,
-        secretAccessKey: opts.secretAccessKey,
-        endpoint: opts.endpoint
+        secretAccessKey: opts.secretKey,
+        endpoint: opts.endpoint,
+        s3BucketEndpoint: true, // true if endpoint set
+        s3DisableBodySigning: true,
+        signatureVersion: 'v2',
+        computeChecksums: false,
+        // sslEnabled: false,
+        // port: 9000
     })
+
+    console.info(opts)
 
     return s3
 }
@@ -25,6 +33,7 @@ export function write(opts, cb) {
             Key: "data/"+opts.name,
             Body: opts.body,
             Bucket: opts.bucket,
+            'ContentType': 'text/html',
             Metadata: metadata
         },
         cb

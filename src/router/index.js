@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import S3Credentials from '../views/S3Credentials.vue'
+import S3Config from '../views/S3Config.vue'
 import Editor from '../views/Editor.vue'
 
 Vue.use(VueRouter)
@@ -22,8 +22,8 @@ const routes = [
   },
   {
     path: '/s3credentials',
-    name: 'S3Credentials',
-    component: S3Credentials
+    name: 'S3Config',
+    component: S3Config
   },
   {
     path: '/editor/:file*',

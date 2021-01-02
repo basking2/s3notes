@@ -3,7 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/editor/note.html">Editor</router-link> |
-      <router-link :to="{name: 'S3Credentials'}">S3 Credentials</router-link> |
+      <router-link :to="{name: 'S3Config'}">S3 Config</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>

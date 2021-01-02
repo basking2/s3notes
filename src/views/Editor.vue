@@ -42,8 +42,29 @@ export default {
     },
     methods: {
         saveFile(event) {
-            // if (this.file) {
-            // }
+            if (this.file) {
+                var s3config = this.$store.getters.s3config
+                var opts = {
+                    name: 'notes.txt',
+                    bucket: s3config.bucket,
+                    endpoint: s3config.endpoint,
+                    secretKey: s3config.secretKey,
+                    accessKey: s3config.accessKey,
+                    body: "Test file.",
+                    salt: "salt",
+                    iv1: 'iv1',
+                    iv2: 'iv2',
+                    'cipher-name': 'cipher name'
+                }
+
+                daos3.write(opts, (err, data) => {
+                    if (err) {
+                        console.error("ERR", err)
+                    } else {
+                        console.info("Done", data)  
+                    }
+                })
+            }
         },
         loadFile() {
             // if (this.file) {
