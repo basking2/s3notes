@@ -6,15 +6,9 @@ function mks3(opts) {
         accessKeyId: opts.accessKey,
         secretAccessKey: opts.secretKey,
         endpoint: opts.endpoint,
-        s3BucketEndpoint: true, // true if endpoint set
-        s3DisableBodySigning: true,
-        signatureVersion: 'v2',
-        computeChecksums: false,
-        // sslEnabled: false,
-        // port: 9000
+        s3ForcePathStyle: true,
+        signatureVersion: 'v4',
     })
-
-    console.info(opts)
 
     return s3
 }
