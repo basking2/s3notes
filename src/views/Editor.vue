@@ -64,7 +64,7 @@ export default {
                     var s3config = this.$store.getters.s3config
                     console.info(props)
                     var opts = {
-                        name: 'notes.txt',
+                        name: this.file,
                         content_type: this.content_type,
                         ispublic: !!this.isPublic,
                         bucket: s3config.bucket,
@@ -94,7 +94,7 @@ export default {
             if (this.file) {
                 var s3config = this.$store.getters.s3config
                 var opts = {
-                    name: 'notes.txt',
+                    name: this.file,
                     bucket: s3config.bucket,
                     endpoint: s3config.endpoint,
                     secretKey: s3config.secretKey,
@@ -111,7 +111,7 @@ export default {
                         } else {
                             this.isPublic = false
                         }
-                        
+
                         if ('cipher' in data) {
                             this.encrypt = true
                             encryption.decrypt(this.$store.getters.docpass, data.salt, data.iv1, data.iv2, data.key, data.body, (err, data) => {
