@@ -69,6 +69,9 @@ function recursiveWalk(prefix, cb) {
                         recursiveWalk(path.join(prefix, dent.name), cb)
                     }
                     r(dir)
+                } else {
+                    // No more directory entries! Close.
+                    dir.close()
                 }
             })
         }
