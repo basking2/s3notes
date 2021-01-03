@@ -24,7 +24,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-alert :type="alertType" dismissible :value="!!alertMessage">{{alertMessage}}</v-alert>
+      <v-alert :type="alertType" dismissible v-model="alert">{{alertMessage}}</v-alert>
 
       <v-container fluid
         v-on:auth-error.prevent="onAuthError($event)"
@@ -40,6 +40,7 @@
 export default {
   data() {
     return {
+      alert: false,
       alertMessage: undefined,
       alertType: 'error',
       drawer: undefined
@@ -52,6 +53,8 @@ export default {
     },
     onAlertMessage(event) {
       this.alertMessage = event.message
+      this.alertType = event.alertType
+      this.alert = true
     }
   }
 }

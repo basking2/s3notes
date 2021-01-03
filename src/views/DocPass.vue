@@ -45,6 +45,7 @@ export default {
             }
             else {
                 this.$store.commit('docpass', this.docpass)
+                utilEvent.dispatchAlert(this, 'success', "Credentials stored.")
             }
         }
     }

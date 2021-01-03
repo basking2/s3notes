@@ -10,6 +10,7 @@
 </template>
 
 <script>
+const utilEvent = require('../util/event')
 export default {
     data() {
         return {
@@ -23,9 +24,11 @@ export default {
         clear() {
             this.$store.commit('clears3config')
             this.s3config = {}
+            utilEvent.dispatchAlert(this, 'success', "S3 configuration cleared.")
         },
         updateAll() {
             this.$store.commit('s3config', this.s3config)
+            utilEvent.dispatchAlert(this, 'success', "S3 configuration stored.")
         }
     }
 }

@@ -12,9 +12,15 @@ export function dispatchAuthError(vueComponent, message = "Authentication error.
     vueComponent.$el.dispatchEvent(event)
 }
 
-export function dispatchAlert(vueComponent, message) {
+export function dispatchAlert(vueComponent, alertType, message) {
     var event = new Event('alert-message', { bubbles: true })
-    event.message = message
+    if (message) {
+        event.message = message
+        event.alertType = alertType
+    } else {
+        event.message = alertType
+        event.alertType = 'error'
+    }
     vueComponent.$el.dispatchEvent(event)
 }
 
