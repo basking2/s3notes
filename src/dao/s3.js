@@ -16,22 +16,37 @@ function mks3(opts) {
 export function write(opts, cb) {
     const s3 = mks3(opts)
     const metadata = {}
+    const req = {
+        Key: "data/"+opts.name,
+        Body: opts.body,
+        Bucket: opts.bucket,
+        'ContentType': opts.content_type || 'text/plain'
+    }
 
-    metadata['iv1'] = opts.iv1
-    metadata['iv2'] = opts.iv2
-    metadata['salt'] = opts.salt
-    metadata['cipher-name'] = opts['cipher-name']
+    if ('salt' in opts && opts.salt) {
+        metadata.salt = opts.salt
+    }
+    if ('iv1' in opts && opts.iv1) {
+        metadata.iv1 = opts.iv1
+    }
+    if ('iv2' in opts && opts.iv2) {
+        metadata.iv2 = opts.iv2
+    }
+    if ('key' in opts && opts.key) {
+        metadata.key = opts.key
+    }
+    if ('cipher' in opts && opts.cipher) {
+        metadata.cipher = opts.cipher
+    }
 
-    s3.putObject(
-        {
-            Key: "data/"+opts.name,
-            Body: opts.body,
-            Bucket: opts.bucket,
-            'ContentType': 'text/html',
-            Metadata: metadata
-        },
-        cb
-    )
+    if ('ispublic' in opts && opts.ispublic) {
+        metadata.ispublic = 'true'
+        req.ACL = 'public-read'
+    }
+
+    req.Metadata = metadata
+
+    s3.putObject(req, cb)
 }
 
 export function read(opts, cb) {
@@ -47,10 +62,8 @@ export function read(opts, cb) {
                 cb(err, data)
             } else {
                 cb(err, {
-                    iv1: data.Metadata.iv1,
-                    iv2: data.Metadata.iv2,
-                    salt: data.Metadata.salt,
-                    'cipher-name': data.Metadata['cipher-name'],
+                    ... data.Metadata,
+                    content_type: data.ContentType || 'text/plain',
                     name: opts.name,
                     body: new TextDecoder("utf-8").decode(data.Body)
                 })
