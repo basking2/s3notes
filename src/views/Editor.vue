@@ -19,7 +19,6 @@ const utilEvent = require('../util/event')
 
 const ace = require('ace-builds/src-min-noconflict/ace')
 
-
 // This needs only be required, not bound to a variable.
 require('ace-builds/webpack-resolver')
 
@@ -43,6 +42,10 @@ export default {
     methods: {
         saveFile(event) {
             if (this.file) {
+
+                var body = this.editor.session.getValue()
+
+                
                 var s3config = this.$store.getters.s3config
                 var opts = {
                     name: 'notes.txt',
@@ -50,7 +53,7 @@ export default {
                     endpoint: s3config.endpoint,
                     secretKey: s3config.secretKey,
                     accessKey: s3config.accessKey,
-                    body: "Test file.",
+                    body: body,
                     salt: "salt",
                     iv1: 'iv1',
                     iv2: 'iv2',
@@ -67,8 +70,25 @@ export default {
             }
         },
         loadFile() {
-            // if (this.file) {
-            // }
+            if (this.file) {
+                var s3config = this.$store.getters.s3config
+                var opts = {
+                    name: 'notes.txt',
+                    bucket: s3config.bucket,
+                    endpoint: s3config.endpoint,
+                    secretKey: s3config.secretKey,
+                    accessKey: s3config.accessKey,
+                }
+
+                daos3.read(opts, (err, data) => {
+                    if (err) {
+                        console.error("ERR", err)
+                    } else {
+                        console.info("Done", data)
+                        this.editor.session.setValue(data.body)
+                    }
+                })
+            }
         }
     },
     mounted() {

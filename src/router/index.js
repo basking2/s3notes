@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import S3Config from '../views/S3Config.vue'
 import Editor from '../views/Editor.vue'
+import DocPass from '../views/DocPass.vue'
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,11 @@ const routes = [
         file: route.params.file
       }
     }
+  },
+  {
+    path: '/docpass',
+    name: 'DocPass',
+    component: DocPass
   }
 ]
 

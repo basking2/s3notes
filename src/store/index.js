@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    s3config: undefined
+    s3config: undefined,
+    docpass: undefined
   },
   getters: {
     s3config: (state) => {
@@ -14,6 +15,14 @@ export default new Vuex.Store({
       }
 
       return state.s3config
+    },
+
+    docpass: (state) => {
+      if (!state.docpass) {
+        state.docpass = window.localStorage.getItem('s3notes-docpass')
+      }
+
+      return state.docpass
     }
   },
   mutations: {
@@ -24,6 +33,10 @@ export default new Vuex.Store({
     clears3config(state) {
       state.s3config = {}
       window.localStorage.setItem('s3notes-s3config', JSON.stringify({}))
+    },
+    docpass(state, pw) {
+      state.docpass = pw
+      state.docpass = window.localStorage.setItem('s3notes-docpass', pw)
     }
   },
   actions: {
