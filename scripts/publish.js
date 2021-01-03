@@ -2,14 +2,46 @@
 // vim: set sw=4 et : 
 const fs = require('fs')
 const path = require('path')
+const process = require('process')
+const yargs = require('yargs')
+const { hideBin } = require('yargs/helpers')
 const AWS = require('aws-sdk')
 
-const bucket = 'data'
+var prefix = 'dist'
+
+var argv = yargs(hideBin(process.argv))
+    .usage('Usage: $0 [options]')
+    .help('h')
+    .alias('h', 'help')
+    
+    .nargs('s', 1)
+    .alias('s', 'secretAccessKey')
+    .describe('s', 'Set the secret access key.')
+    .default('s', 'minioadmin')
+
+    .nargs('i', 1)
+    .alias('i', 'accessKeyId')
+    .describe('i', 'The access key ID.')
+    .default('i', 'minioadmin')
+
+    .nargs('e', 1)
+    .alias('e', 'endpoint')
+    .describe('e', 'Set the endpoint.')
+    .default('e', 'http://localhost:9000')
+
+    .nargs('b', 1)
+    .alias('b', 'bucket')
+    .describe('b', 'Set the S3 bucket.')
+    .default('b', 'data')
+
+    .argv
+
+const bucket = argv.bucket
 
 const s3 = new AWS.S3({
-    accessKeyId: 'minioadmin',
-    secretAccessKey: 'minioadmin',
-    endpoint: 'http://localhost:9000',
+    accessKeyId: argv.accessKeyId || 'minioadmin',
+    secretAccessKey: argv.secretAccessKey || 'minioadmin',
+    endpoint: argv.endpoint || 'http://localhost:9000',
     s3ForcePathStyle: true,
     signatureVersion: 'v4',
 })
@@ -18,7 +50,9 @@ function recursiveWalk(prefix, cb) {
 
     fs.opendir(prefix, (err, dir) => {
         if (err) {
-            dir.close()
+            if (dir) {
+                dir.close()
+            }
             return
         }
 
@@ -55,8 +89,6 @@ function mimetype(m) {
 
     return 'application/octet-stream'
 }
-
-var prefix = 'dist'
 
 recursiveWalk('dist', (err, pardir, dent) => {
     if (err) {

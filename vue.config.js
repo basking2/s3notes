@@ -1,5 +1,8 @@
+const process = require('process')
+
+
 module.exports = {
-  publicPath: '/data',
+  publicPath: process.env['VUE_PUBLIC_PATH'],
   "transpileDependencies": [
     "vuetify"
   ],

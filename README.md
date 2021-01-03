@@ -24,7 +24,14 @@ docker run -p 9000:9000 -e MINIO_ACCESS_KEY=minioadmin \
 Now build and publish the application.
 
 ```
-npm run build && npm run publish
+# Build the application to be served off of /data on the host.
+VUE_PUBLIC_PATH=/data npm run build
+
+# Now publish to the bucket that has the same name as the VUE_PUBLIC_PATH.
+npm run publish -- -s minioadmin \
+                   -i minioadmin \
+                   -e http://localhost:9000 \
+                   -b data
 ```
 
 ### Normal Vue Development
