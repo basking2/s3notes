@@ -7,9 +7,7 @@
 
         <div v-if="html" v-html="html"></div>
         <code v-if="rawText">{{rawText}}</code>
-        <div v-if="adoc">
-            {{adoc}}
-        </div>
+        <div v-if="adoc" v-html="adoc"></div>
         <div v-if="markdown">
             {{markdown}}
         </div>
@@ -20,6 +18,7 @@
 const http = require('http')
 const encryption = require('../encryption')
 const utilEvent = require('../util/event')
+const asciidoctor = require('asciidoctor')()
 
 export default {
     props: {
@@ -53,8 +52,10 @@ export default {
             this.html = html
         },
         renderAsciiDoc(adoc) {
+            const adocOpts = { 'safe': 'server', 'attributes': { 'showtitle': true, 'icons': 'font' } }
+            const html = asciidoctor.convert(adoc, adocOpts)
             this.clearContent()
-            this.adoc = adoc
+            this.adoc = html
         },
         renderMarkdown(md) {
             this.clearContent()
