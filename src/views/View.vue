@@ -117,8 +117,26 @@ export default {
             req.end()
         },
         handleClicks(event){
-            if (event.target)
-                console.info('Handle click', event.target.href)
+            if (event.target && event.target.href) {
+                var url = new URL(event.target.href)
+                if (window.location.pathname == url.pathname) {
+
+                    var eles = document.getElementsByTagName('a')
+                    for (var i = 0; i < eles.length; ++i) {
+                        var url2 = new URL(eles[i].href)
+                        if (url2.hash == url.hash) {
+                            eles[i].scrollTo()
+                        }
+                    }
+                    return
+                }
+
+                if (window.location.host == url.host) {
+                    this.$router.push(`/view${url.pathname}`)
+                    window.location.reload(true)                    
+                    return
+                }
+            }
         }
     }
 }
