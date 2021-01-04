@@ -136,6 +136,9 @@ export default {
                     window.location.reload(true)                    
                     return
                 }
+
+                // Default is to just go to a location.
+                window.location = event.target.href
             }
         }
     }
