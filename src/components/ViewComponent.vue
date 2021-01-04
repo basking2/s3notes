@@ -75,10 +75,33 @@ export default {
                 this.onRender(this.markdown)
             }            
         },
-        getDoc() {
+        buildUrlFromWindowLocation() {
+            var url = window.location.href.split('#', 1)[0]
+
+            if (!url.endsWith('/')) {
+                var i = url.lastIndexOf('/')
+                if (i > 6) {
+                    // If after http:// (index 6) remove it.
+                    url = url.substr(0, i)
+                }
+
+                url += `/data/${this.file}`
+            }
+
+            return new URL(url)
+        },
+        buildUrlFromS3Endpoint() {
             var endpoint = this.$store.getters.s3config.endpoint
             var bucket = this.$store.getters.s3config.bucket
-            var url = new URL(`${endpoint}/${bucket}/data/${this.file}`)
+            return new URL(`${endpoint}/${bucket}/data/${this.file}`)
+        },
+        getDoc() {
+            var url
+            if (this.$store.getters.s3config.endpoint && this.$store.getters.s3config.endpoint.length > 0) {
+                url = this.buildUrlFromS3Endpoint()
+            } else {
+                url = this.buildUrlFromWindowLocation()
+            }
 
             var req = http.request(
                 {
