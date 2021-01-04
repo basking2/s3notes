@@ -1,16 +1,11 @@
 <template>
     <div v-on:click.prevent="handleClicks($event)">
-        View a document.
-        Use S3: {{useS3}}
-        <a href="http://www.google.com">Demo link</a>
         {{file}}
 
         <div v-if="html" v-html="html"></div>
         <code v-if="rawText">{{rawText}}</code>
         <div v-if="adoc" v-html="adoc"></div>
-        <div v-if="markdown">
-            {{markdown}}
-        </div>
+        <div v-if="markdown" v-html="markdown"></div>
     </div>
 </template>
 
@@ -19,6 +14,7 @@ const http = require('http')
 const encryption = require('../encryption')
 const utilEvent = require('../util/event')
 const asciidoctor = require('asciidoctor')()
+const marked = require('marked')
 
 export default {
     props: {
@@ -59,7 +55,7 @@ export default {
         },
         renderMarkdown(md) {
             this.clearContent()
-            this.markdown = md
+            this.markdown = marked(md)
         },
         getDoc() {
             var endpoint = this.$store.getters.s3config.endpoint
