@@ -2,14 +2,18 @@
     <div
         v-on:keydown.ctrl.83.prevent="saveFile($event)"
         v-on:keydown.meta.83.prevent="saveFile($event)"
+
+        v-on:keydown.ctrl.79.prevent="displayFile($event)"
+        v-on:keydown.meta.79.prevent="displayFile($event)"
         >
 
-        File: {{ file }}
         <v-card flat class="d-flex">
+            <router-link class="mt-auto mb-auto" :to="`/view/${file}`" >View {{file}}.</router-link>
             <v-checkbox v-model="encrypt" label="Encrypt" />
             <v-checkbox v-model="isPublic" label="Public" />
+            <v-spacer />
+            <v-text-field v-model="content_type" label="Content Type" />
         </v-card>
-        <v-text-field v-model="content_type" label="Content Type" />
 
         <div id="editor"></div>
     </div>
@@ -46,6 +50,9 @@ export default {
     created() {
     },
     methods: {
+        displayFile(event) {
+            this.$router.push(`/view/${this.file}`)
+        },
         saveFile(event) {
             if (this.file) {
 
@@ -102,10 +109,30 @@ export default {
                 }
 
                 daos3.read(opts, (err, data) => {
-                    this.content_type = data.content_type
-                    if (err) {
-                        console.error("ERR", err)
+
+                    if (this.file.toLowerCase().endsWith(".html")) {
+                        this.content_type = "text/html"
+                        this.editor.session.setMode("ace/mode/html");
+                    } else if (this.file.toLowerCase().endsWith(".adoc") || this.file.toLowerCase().endsWith(".asciidoc")) {
+                        this.content_type = "text/plain"
+                        this.editor.session.setMode("ace/mode/asciidoc");
+                    } else if (this.file.toLowerCase().endsWith(".md")) {
+                        this.content_type = "text/plain"
+                        this.editor.session.setMode("ace/mode/markdown");
+                    } else if (this.file.toLowerCase().endsWith(".json")) {
+                        this.content_type = "text/json"
+                        // editor.session.setMode("ace/mode/javascript");
+                        this.editor.session.setMode("ace/mode/json");
                     } else {
+                        this.content_type = "text/plain"
+                        this.editor.session.setMode("ace/mode/plain_text");
+                    }
+
+                    if (data && 'content_type' in data) {
+                        this.content_type = data.content_type
+                    }
+
+                    if (data) {
                         if ('ispublic' in data) {
                             this.isPublic = true
                         } else {
@@ -131,6 +158,7 @@ export default {
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/javascript");
+        editor.focus()
         this.editor = editor
 
         var s3config = this.$store.getters.s3config 
@@ -145,7 +173,7 @@ export default {
 <style scoped>
     #editor { 
         position: absolute;
-        top: 20em;
+        top: 8em;
         right: 0;
         bottom: 0;
         left: 0;

@@ -1,11 +1,16 @@
 <template>
     <div v-on:click.prevent="handleClicks($event)">
-        {{file}}
+
 
         <div v-if="html" v-html="html"></div>
         <code v-if="rawText">{{rawText}}</code>
         <div v-if="adoc" v-html="adoc"></div>
         <div v-if="markdown" v-html="markdown"></div>
+
+
+        <v-footer absolute>
+            <router-link :to="`/editor/${file}`">Edit {{file}}</router-link>
+        </v-footer>
     </div>
 </template>
 
@@ -113,7 +118,7 @@ export default {
         },
         handleClicks(event){
             if (event.target)
-                console.info(event.target.href)
+                console.info('Handle click', event.target.href)
         }
     }
 }

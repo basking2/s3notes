@@ -9,9 +9,6 @@
           <router-link to="/">Home</router-link>
         </v-list-item>
         <v-list-item>
-          <router-link to="/editor/note.html">Editor</router-link>
-        </v-list-item>
-        <v-list-item>
           <router-link :to="{name: 'DocPass'}">Doc Pass</router-link>
         </v-list-item>
         <v-list-item>

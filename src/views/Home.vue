@@ -1,11 +1,18 @@
 <template>
   <div class="home">
 
-    <v-card class="d-flex flex-column">
-    <router-link to="/view/note.html">note.html</router-link>
-    <router-link to="/view/note.adoc">note.adoc</router-link>
-    <router-link to="/view/note.md">note.md</router-link>
-    <router-link to="/view/note.txt">note.txt</router-link>
+
+    <v-card flat class="d-flex flex-column">
+      <v-card flat class="d-flex flex-row">
+        <v-text-field v-on:keyup.enter="$router.push(`/editor/${newFile}`)" v-model="newFile" label="New file."></v-text-field>
+        <v-btn @click="$router.push(`/editor/${newFile}`)">Edit</v-btn>
+        <v-btn @click="$router.push(`/view/${newFile}`)">View</v-btn>
+      </v-card>
+
+      <router-link to="/view/note.html">note.html</router-link>
+      <router-link to="/view/note.adoc">note.adoc</router-link>
+      <router-link to="/view/note.md">note.md</router-link>
+      <router-link to="/view/note.txt">note.txt</router-link>
     </v-card>
 
     <!-- <img alt="Vue logo" src="../assets/logo.png">
@@ -21,6 +28,13 @@ export default {
   name: 'Home',
   components: {
     // HelloWorld
+  },
+  data() {
+    return {
+      newFile: undefined
+    }
+  },
+  methods: {
   }
 }
 </script>
