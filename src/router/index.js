@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import S3Config from '../views/S3Config.vue'
 import Editor from '../views/Editor.vue'
 import DocPass from '../views/DocPass.vue'
+import View from '../views/View.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,19 @@ const routes = [
     path: '/docpass',
     name: 'DocPass',
     component: DocPass
+  },
+  {
+    path: '/view/:file*',
+    name: 'View',
+    component: View,
+    props: route => {
+      var p = {}
+
+      p.useS3 = !!route.query.useS3
+      p.file = route.params.file
+
+      return p
+    }
   }
 ]
 
