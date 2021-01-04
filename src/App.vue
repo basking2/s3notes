@@ -17,6 +17,18 @@
         <v-list-item>
           <router-link to="/about">About</router-link>
         </v-list-item>
+
+        <v-list-item>
+          <v-card flat class="d-flex flex-column">
+            <v-card flat class="d-flex flex-row">
+              <v-text-field v-on:keyup.enter="$router.push(`/editor/${newFile}`)" v-model="newFile" label="New file."></v-text-field>
+            </v-card>
+            <v-card flat class="d-flex flex-row">
+              <v-btn @click="$router.push(`/editor/${newFile}`)">Edit</v-btn>
+              <v-btn @click="$router.push(`/view/${newFile}`)">View</v-btn>
+            </v-card>
+          </v-card>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -40,7 +52,8 @@ export default {
       alert: false,
       alertMessage: undefined,
       alertType: 'error',
-      drawer: undefined
+      drawer: undefined,
+      newFile: undefined
     }
   },
   methods: {
