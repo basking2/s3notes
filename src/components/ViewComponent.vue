@@ -1,12 +1,10 @@
 <template>
-    <div v-on:click.prevent="handleClicks($event)">
+    <div v-on:click.prevent="handleClicks($event)" class="pa-2">
 
-
-        <div v-if="html" v-html="html"></div>
-        <code v-if="rawText">{{rawText}}</code>
-        <div v-if="adoc" v-html="adoc"></div>
-        <div v-if="markdown" v-html="markdown"></div>
-
+        <div  class="content" v-if="html" v-html="html"></div>
+        <code class="content" v-if="rawText">{{rawText}}</code>
+        <div  class="content" v-if="adoc" v-html="adoc"></div>
+        <div  class="content" v-if="markdown" v-html="markdown"></div>
 
         <v-footer absolute>
             <router-link :to="`/editor/${file}`">Edit {{file}}</router-link>
@@ -60,7 +58,7 @@ export default {
             }
         },
         renderAsciiDoc(adoc) {
-            const adocOpts = { 'safe': 'server', 'attributes': { 'showtitle': true, 'icons': 'font' } }
+            const adocOpts = { 'safe': 'unsafe', 'attributes': { 'showtitle': true, 'icons': 'font' } }
             const html = asciidoctor.convert(adoc, adocOpts)
             this.clearContent()
             this.adoc = html
@@ -162,6 +160,7 @@ export default {
             if (event.target && event.target.href) {
                 var url = new URL(event.target.href)
                 if (window.location.pathname == url.pathname) {
+                    // Focus anchors (href=#...).
 
                     var eles = document.getElementsByTagName('a')
                     for (var i = 0; i < eles.length; ++i) {
@@ -174,8 +173,13 @@ export default {
                 }
 
                 if (window.location.host == url.host) {
-                    this.$router.push(`/view${url.pathname}`)
-                    window.location.reload(true)                    
+                    // Navigate to alternate document (href="https://...")
+                    var base = process.env['BASE_URL']
+                    var baseStart = url.href.indexOf(base)
+                    var rest = url.href.substr(baseStart + base.length)
+
+                    this.$router.push(`/view/${rest}`)
+                    // window.location.reload(true)                    
                     return
                 }
 
@@ -186,3 +190,15 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .content {
+        text-align: left;
+    }
+</style>
+
+<style src="./asciidoctor.css">
+</style>
+
+<style src="./asciidoctor_highlight_js.css">
+</style>

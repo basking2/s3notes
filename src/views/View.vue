@@ -1,6 +1,6 @@
 <template>
     <div>
-        <view-component :file="file" :useS3="!!useS3" />
+        <view-component :file="myfile" :useS3="!!useS3" :key="myfile" />
     </div>
 </template>
 
@@ -17,11 +17,18 @@ export default {
     },
     data() {
         return {
+            myfile: this.file
         }
     },
     mounted() {
     },
     methods: {
+    },
+    beforeRouteUpdate(to, from, next) {
+        if (to.name == from.name) {
+            this.myfile = to.params.file
+            next()
+        }
     }
 }
 </script>
