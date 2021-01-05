@@ -179,7 +179,6 @@ export default {
                     var rest = url.href.substr(baseStart + base.length)
 
                     this.$router.push(`/view/${rest}`)
-                    // window.location.reload(true)                    
                     return
                 }
 

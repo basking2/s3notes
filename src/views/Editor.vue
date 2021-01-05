@@ -1,4 +1,6 @@
 <template>
+    <!-- S (key 83) is save. -->
+    <!-- O (key 79) is open. -->
     <div
         v-on:keydown.ctrl.83.prevent="saveFile($event)"
         v-on:keydown.meta.83.prevent="saveFile($event)"
@@ -7,8 +9,13 @@
         v-on:keydown.meta.79.prevent="displayFile($event)"
         >
 
+        <v-card flat class="ma-1 text-left">
+            <v-btn class="ma-1" v-on:click="saveFile($event)">Save</v-btn>
+            <v-btn class="ma-1" v-on:click="$router.push(to=`/view/${file}`)">View</v-btn>
+        </v-card>
+
         <v-card flat class="d-flex">
-            <router-link class="mt-auto mb-auto" :to="`/view/${file}`" >View {{file}}.</router-link>
+            <!-- <router-link class="mt-auto mb-auto" :to="`/view/${file}`" >{{file}}.</router-link> -->
             <v-checkbox v-model="encrypt" label="Encrypt" />
             <v-checkbox v-model="isPublic" label="Public" />
             <v-spacer />
@@ -89,8 +96,9 @@ export default {
                     daos3.write(opts, (err, data) => {
                         if (err) {
                             console.error("ERR", err)
+                            utilEvent.dispatchAlert(this, err.message)
                         } else {
-                            console.info("Done", data)  
+                            utilEvent.dispatchAlert(this, 'success', `File ${this.file} saved.`)
                         }
                     })
                 })
@@ -156,16 +164,17 @@ export default {
     mounted() {
         
         var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/monokai");
+
+        // Dark theme.
+        // editor.setTheme("ace/theme/monokai");
+
         editor.session.setMode("ace/mode/javascript");
         editor.focus()
         this.editor = editor
 
         var s3config = this.$store.getters.s3config 
 
-        if (this.file) {
-            this.loadFile()
-        }
+        this.loadFile()
     }
 }
 </script>
@@ -173,7 +182,7 @@ export default {
 <style scoped>
     #editor { 
         position: absolute;
-        top: 8em;
+        top: 10em;
         right: 0;
         bottom: 0;
         left: 0;
