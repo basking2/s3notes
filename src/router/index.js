@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import S3Config from '../views/S3Config.vue'
-import Editor from '../views/Editor.vue'
 import DocPass from '../views/DocPass.vue'
 import View from '../views/View.vue'
 
@@ -30,7 +29,7 @@ const routes = [
   {
     path: '/editor/:file*',
     name: 'Editor',
-    component: Editor,
+    component: () => import('../views/Editor.vue'),
     props: route => {
       return {
         // Props go here.
