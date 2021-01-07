@@ -1,6 +1,6 @@
 # S3 Notes
 
-![](./public/logo.png =128x)
+![](public/logo.png =128x)
 
 This is a simple static webpage that, if published through S3,
 should allow a user to enter credentials and publish back to the
