@@ -72,7 +72,26 @@ export function read(opts, cb) {
     )
 }
 
+export function del(opts, cb) {
+    const s3 = mks3(opts)
+
+    s3.deleteObject(
+        {
+            Key: "data/"+opts.name,
+            Bucket: opts.bucket
+        },
+        (err, data) => {
+            if (err) {
+                cb(err, data)
+            } else {
+                cb(err, data)
+            }
+        }
+    )
+}
+
 export default {
     write,
+    del,
     read
 }

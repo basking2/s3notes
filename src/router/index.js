@@ -38,6 +38,17 @@ const routes = [
     }
   },
   {
+    path: '/file/:file*',
+    name: 'File',
+    component: () => import('../views/File.vue'),
+    props: route => {
+      return {
+        // Props go here.
+        file: route.params.file
+      }
+    }
+  },
+  {
     path: '/docpass',
     name: 'DocPass',
     component: DocPass
