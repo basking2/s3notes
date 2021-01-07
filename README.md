@@ -1,6 +1,6 @@
 # S3 Notes
 
-![S3 Notes Logo](./public/logo.png =128x128)
+![S3 Notes Logo](./public/logo.png=128x128)
 
 This is a simple static webpage that, if published through S3,
 should allow a user to enter credentials and publish back to the
