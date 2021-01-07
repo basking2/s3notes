@@ -1,12 +1,21 @@
 <template>
   <v-app id="app">
 
+
     <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
     <v-navigation-drawer v-model="drawer" app>
+  
+      <v-card flat class="row ml-4 mt-1">
+        <v-card flat class="mt-auto mb-auto">S3 Notes</v-card>
+        <v-img src="logo.png" max-width="64px" class="ml-auto mr-auto"></v-img>
+      </v-card>
+  
       <v-list nav dense>
         <v-list-item>
-          <router-link to="/">Home</router-link>
+          <router-link to="/">
+            <v-card flat class="mt-auto mb-auto">Home</v-card>
+          </router-link>
         </v-list-item>
         <v-list-item>
           <router-link :to="{name: 'DocPass'}">Doc Pass</router-link>
@@ -33,6 +42,7 @@
     </v-navigation-drawer>
 
     <v-main>
+      
       <v-alert :type="alertType" dismissible v-model="alert">{{alertMessage}}</v-alert>
 
       <v-container fluid
