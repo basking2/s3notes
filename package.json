@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "ace-builds": "^1.4.12",
-    "asciidoctor": "^2.2.1",
+    "asciidoctor": "^3.0.0",
     "aws-sdk": "^2.862.0",
     "core-js": "^3.9.1",
     "marked": "^1.2.9",
