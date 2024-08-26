@@ -5,9 +5,9 @@ const path = require('path')
 const process = require('process')
 const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
-const AWS = require('aws-sdk')
+const S3 = require('@aws-sdk/client-s3')
 
-var prefix = 'dist'
+var prefix = 'build'
 
 var argv = yargs(hideBin(process.argv))
     .usage('Usage: $0 [options]')
@@ -27,21 +27,31 @@ var argv = yargs(hideBin(process.argv))
     .nargs('e', 1)
     .alias('e', 'endpoint')
     .describe('e', 'Set the endpoint.')
-    .default('e', 'http://localhost:9000')
+    
+    // FIXME - unclear why S3 requires the bucket name here.
+    .default('e', 'http://localhost:9000/data')
 
     .nargs('b', 1)
     .alias('b', 'bucket')
     .describe('b', 'Set the S3 bucket.')
     .default('b', 'data')
 
+    .nargs('r', 1)
+    .alias('r', 'region')
+    .describe('s', 'S3 region.')
+    .default('r', 'us-east-1')
+
     .argv
 
-const bucket = argv.bucket
+const bucket = argv.bucket || 'data'
 
-const s3 = new AWS.S3({
-    accessKeyId: argv.accessKeyId || 'minioadmin',
-    secretAccessKey: argv.secretAccessKey || 'minioadmin',
-    endpoint: argv.endpoint || 'http://localhost:9000',
+const s3 = new S3.S3Client({
+    credentials: {
+        accessKeyId: argv.accessKeyId || 'minioadmin',
+        secretAccessKey: argv.secretAccessKey || 'minioadmin',
+    },
+    region: argv.region,
+    endpoint: argv.endpoint || `http://localhost:9000/${bucket}`,
     s3ForcePathStyle: true,
     signatureVersion: 'v4',
 })
@@ -93,7 +103,7 @@ function mimetype(m) {
     return 'application/octet-stream'
 }
 
-recursiveWalk('dist', (err, pardir, dent) => {
+recursiveWalk(prefix, (err, pardir, dent) => {
     if (err) {
         console.error(err)
         return
@@ -108,8 +118,7 @@ recursiveWalk('dist', (err, pardir, dent) => {
     p = p.substr(prefix.length+1)
     console.info(`Sending ${p}.`)
 
-
-    s3.putObject({
+    po = new S3.PutObjectCommand({
         Bucket: bucket,
         Body: body,
         Key: p,
@@ -118,9 +127,9 @@ recursiveWalk('dist', (err, pardir, dent) => {
         Metadata: {
           'iv1': "None"
         }
-    },
-    (e, d) => {
-        //console.info(e)
-        //console.info(d)
     })
+
+    s3.send(po)
+        .then(e => console.info(JSON.stringify(e, 2, 2)))
+        .catch(e => console.error(e))
 })

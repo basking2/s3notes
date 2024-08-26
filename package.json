@@ -2,57 +2,60 @@
   "name": "s3notes",
   "version": "0.1.0",
   "private": true,
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.637.0",
+    "@basking2/docryptjs": "github:basking2/doccryptjs#main",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ace-builds": "https://github.com/ajaxorg/ace-builds#v1.36.2",
+    "asciidoctor": "^3.0.4",
+    "axios": "^1.7.7",
+    "marked": "^14.1.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "start": "react-scripts start",
+    "buildinfo": "node scripts/buildinfo.js",
+    "build": "node scripts/buildinfo.js && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "s3": "node scripts/tests3.js",
+    "s3read": "node scripts/tests3read.js",
     "publish": "node scripts/publish.js"
   },
-  "dependencies": {
-    "ace-builds": "^1.4.12",
-    "asciidoctor": "^2.2.1",
-    "aws-sdk": "^2.862.0",
-    "core-js": "^3.9.1",
-    "marked": "^1.2.9",
-    "vue": "^2.6.11",
-    "vue-router": "^3.5.1",
-    "vuetify": "^2.4.6",
-    "vuex": "^3.6.2"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.11",
-    "@vue/cli-plugin-eslint": "^4.5.11",
-    "@vue/cli-plugin-router": "^4.5.11",
-    "@vue/cli-plugin-vuex": "^4.5.11",
-    "@vue/cli-service": "^4.5.11",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.32.8",
-    "sass-loader": "^8.0.0",
-    "vue-cli-plugin-vuetify": "~2.0.9",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.2",
-    "yargs": "^16.2.0"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "jest": {
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    }
+  }
 }

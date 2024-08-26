@@ -1,0 +1,49 @@
+
+nav.NavBar {
+    background-color: #333;
+    overflow: hidden;
+    max-width: 8em;
+    display: inline-block;
+    
+    /* Needed for the image centering. */
+    text-align: center;
+}
+
+nav.NavBar img {
+    width: 6em;
+    margin: 1em;
+    background-color: white;
+}
+
+nav.NavBar a {
+    float: left;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+}
+
+/* Hamburger button styling */
+nav.NavBar button {
+    display: none;
+    /* Add more styling for your button here */
+}
+
+/* Style adjustments for smaller screens */
+@media (max-width: 768px) {
+    nav.NavBar a {
+        display: none;
+    }
+
+    nav.NavBar button {
+        display: block;
+    }
+
+    /* If the menu is open, we'll display the links */
+    nav.NavBar.isOpen a {
+        display: block;
+    }
+}
