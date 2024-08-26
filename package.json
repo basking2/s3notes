@@ -1,40 +1,17 @@
 {
   "name": "s3notes",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
     "s3": "node scripts/tests3.js",
     "publish": "node scripts/publish.js"
   },
   "dependencies": {
     "ace-builds": "^1.4.12",
     "asciidoctor": "^2.2.1",
-    "aws-sdk": "^2.862.0",
-    "core-js": "^3.9.1",
-    "marked": "^1.2.9",
-    "vue": "^2.6.11",
-    "vue-router": "^3.5.1",
-    "vuetify": "^2.4.6",
-    "vuex": "^3.6.2"
+    "aws-sdk": "^2.862.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.11",
-    "@vue/cli-plugin-eslint": "^4.5.11",
-    "@vue/cli-plugin-router": "^4.5.11",
-    "@vue/cli-plugin-vuex": "^4.5.11",
-    "@vue/cli-service": "^4.5.11",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.32.8",
-    "sass-loader": "^8.0.0",
-    "vue-cli-plugin-vuetify": "~2.0.9",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.2",
-    "yargs": "^16.2.0"
   },
   "eslintConfig": {
     "root": true,
@@ -42,11 +19,8 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
     },
     "rules": {}
   },
