@@ -1,20 +1,20 @@
 
-const AWS = require('aws-sdk')
+const S3 = require('@aws-sdk/client-s3')
 
-const s3 = new AWS.S3({
-    accessKeyId: 'minioadmin',
-    secretAccessKey: 'minioadmin',
-    endpoint: 'http://localhost:9000',
+
+const s3Client = new S3.S3Client({
+    endpoint: 'http://localhost:9000/data',
+    bucketEndpoint: false,
     s3ForcePathStyle: true,
-    //s3BucketEndpoint: true,
-    //s3DisableBodySigning: true,
+    region: "us-east-1",
     signatureVersion: 'v4',
-    //computeChecksums: false,
-    //sslEnabled: false,
-    // port: 9000
+    credentials: {
+            accessKeyId: 'minioadmin',
+            secretAccessKey: 'minioadmin',
+    },
 })
 
-s3.putObject({
+const po = new S3.PutObjectCommand({
     Bucket: 'data',
     Body: 'This is the test body.',
     Key: 'test.txt',
@@ -23,9 +23,8 @@ s3.putObject({
     Metadata: {
       'iv1': "None"
     }
-},
-(e, d) => {
-    console.info(e)
-    console.info(d)
 })
 
+s3Client.send(po)
+    .then(res => console.info(`Result ${JSON.stringify(res, 2,2)}.`))
+    .catch(err => console.error(`Error ${err}`))
