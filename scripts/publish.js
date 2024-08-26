@@ -27,6 +27,7 @@ var argv = yargs(hideBin(process.argv))
     .nargs('e', 1)
     .alias('e', 'endpoint')
     .describe('e', 'Set the endpoint.')
+    
     // FIXME - unclear why S3 requires the bucket name here.
     .default('e', 'http://localhost:9000/data')
 

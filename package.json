@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.637.0",
-    "@aws-sdk/credential-providers": "^3.637.0",
     "@basking2/docryptjs": "github:basking2/doccryptjs#main",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
