@@ -15,8 +15,8 @@ function NavBar() {
 
                 {<>
                     <a href={process.env.PUBLIC_URL + "/index.html#/"}>Home</a>
+                    <a href="#/settings">Settings</a>
                     <a href="#/about">About</a>
-                    <a href="#/contact">Contact</a>
                 </>}
             </nav>
     )
