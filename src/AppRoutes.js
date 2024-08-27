@@ -1,13 +1,13 @@
 import './AppRoutes.css'
-import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, createHashRouter, Link, RouterProvider } from "react-router-dom";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         path: "/",
         element: (
             <div>
                 <h1>Home 2</h1>
-                <Link to="/about">About</Link>
+                <Link to='/about'>About 2</Link>
             </div>
         ),
     },

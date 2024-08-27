@@ -10,7 +10,8 @@ nav.NavBar {
 }
 
 nav.NavBar img {
-    width: 8em;
+    width: 6em;
+    margin: 1em;
     background-color: white;
 }
 

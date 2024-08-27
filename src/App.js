@@ -7,7 +7,7 @@ function App() {
     <div className="App">
         <header className="App-header">
         </header>
-        
+
         <NavBar />
         <AppRoutes />
       </div>
