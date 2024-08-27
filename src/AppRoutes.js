@@ -1,3 +1,4 @@
+import './AppRoutes.css'
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -5,17 +6,17 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <div>
-                <h1>Home</h1>
-                <Link to="about">About</Link>
+                <h1>Home 2</h1>
+                <Link to="/about">About</Link>
             </div>
         ),
     },
     {
-        path: "about",
+        path: "/about",
         element: (<h1>About</h1>)
     },
 ])
 
-const AppRoutes = () => <RouterProvider router={router} />
+const AppRoutes = () => <div className="AppRoutes"><RouterProvider router={router} /></div>
 
 export default AppRoutes

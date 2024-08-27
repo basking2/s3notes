@@ -6,17 +6,18 @@ function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className={isOpen ? 'isOpen' : ''}>
-            <button onClick={() => setIsOpen(!isOpen)}>
-                <MenuIcon />
-            </button>
+            <nav className={isOpen ? 'NavBar isOpen' : 'NavBar'}>
+                <button onClick={() => setIsOpen(!isOpen)}>
+                    <img src="logo.png"/>
+                    <MenuIcon />
+                </button>
 
-            {<>
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-            </>}
-        </nav>
+                {<>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                </>}
+            </nav>
     )
 }
 
