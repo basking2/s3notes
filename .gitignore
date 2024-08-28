@@ -35,6 +35,8 @@ pnpm-debug.log*
 # production
 /build
 
+/testdata
+
 # misc
 .DS_Store
 .env.local

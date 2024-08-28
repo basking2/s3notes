@@ -118,6 +118,30 @@ function Settings() {
 
     return (<div>
         <h1>Settings</h1>
+        <h2>Secrets</h2>
+        <TextField variant="standard" name="password" type="password"
+            label="Document Encryption Password"
+            defaultValue={configSettings.password}
+            onChange={(event) => {
+                configSettings.epoch += 1
+                configSettings.password = event.target.value
+                handleSettingsChange(event, configSettings)
+            }}
+        />
+
+        <Checkbox
+            defaultChecked={configSettings.encryptSettings}
+            variant= 'standard'
+            name="encryptSettings"
+            aria-label="Encrypt configuration"
+            label="Encrypt Configuration"
+            onChange={(event) => {
+                configSettings.encryptSettings = event.target.checked
+                configSettings.epoch += 1
+                handleSettingsChange(event, configSettings)
+            }}
+            />
+
         <h2>Storage Settings</h2>
         <Tabs value={configSettings.type} onChange={handleTypeChange} aria-label="storage settings">
             <Tab label="None" value="none"></Tab>

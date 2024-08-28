@@ -1,5 +1,5 @@
 import './AppRoutes.css'
-import { createBrowserRouter, createHashRouter, Link, RouterProvider } from "react-router-dom";
+import { /* createBrowserRouter, */ createHashRouter, Link, RouterProvider } from "react-router-dom";
 import Settings from './Settings';
 
 const router = createHashRouter([
