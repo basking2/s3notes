@@ -1,44 +1,64 @@
-import { Button, Tab, Tabs, TextField } from "@mui/material"
-import React from "react";
+import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
+import React, { useRef } from "react";
 
 const s3NotesConfig = "s3NotesConfig"
 
 function S3TabPanel({handleSettingsChange, config}) {
 
-    const onChange = (event) => {
-        config[event.target.name] = event.target.value
-        console.info(event)
-    }
-
     const params = {
         style: { marginTop: "1em"},
         variant: 'standard',
         fullWidth: true,
-        onChange,
+    }
+
+    const bucketRef = useRef()
+    const endpointRef = useRef()
+    const regionRef = useRef()
+    const accessKeyIdRef = useRef()
+    const secretAccessKeyRef = useRef()
+    const s3ForcePathStyleRef = useRef()
+
+
+    let s3ForcePathStyleDefault = { 'defaultChecked': true }
+    if ('s3ForcePathStyle' in config && !config['s3ForcePathStyle']) {
+        s3ForcePathStyleDefault = {}
     }
 
     return (<div>
         <TextField
             {...params}
-            defaultValue="" name="bucket" aria-label="S3 Bucket" label="Bucket" /><br />
+            defaultValue={config.bucket} inputRef={bucketRef} name="bucket" aria-label="S3 Bucket" label="Bucket" /><br />
         <TextField
             {...params}
-            defaultValue="" name="endpoint" aria-label="S3 Endpoint" label="S3 Endpoint" /><br />
+            defaultValue={config.endpoint} inputRef={endpointRef} name="endpoint" aria-label="S3 Endpoint" label="S3 Endpoint" /><br />
         <TextField
             {...params}
-            defaultValue="us-east-1" name="region" aria-label="AWS Region" label="AWS Region" /><br />
+            defaultValue={config.region || "us-east-1"} inputRef={regionRef} name="region" aria-label="AWS Region" label="AWS Region" /><br />
         <TextField
             {...params}
-            defaultValue="" name="access-key-id" aria-label="Access Key ID" label="Access Key ID" /><br />
+            defaultValue={config['access-key-id']} inputRef={accessKeyIdRef} name="access-key-id" aria-label="Access Key ID" label="Access Key ID" /><br />
         <TextField
             {...params}
-            defaultValue="" name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
+            defaultValue={config['secret-access-key']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
+        <Checkbox
+            {...s3ForcePathStyleDefault}
+            style= { { marginTop: "1em" } }
+            variant= 'standard'
+            inputRef={s3ForcePathStyleRef}
+            name="s3ForcePathStyle" aria-label="S3 Force Path Style" label="S3 Force Path Style"
+            />
 
         <Button
             style={{ marginTop: "1em"}}
             variant="contained"
             onClick={(e) => {
                 config.epoch += 1
+                config.bucket = bucketRef.current.value
+                config.endpoint = endpointRef.current.value
+                config.region = regionRef.current.value
+                config.accessKeyId = accessKeyIdRef.current.value
+                config.secretAccessKey = secretAccessKeyRef.current.value
+                config.s3ForcePathStyle = s3ForcePathStyleRef.current.checked
                 handleSettingsChange(e, config)
             }} >Set Configuration</Button>
 
