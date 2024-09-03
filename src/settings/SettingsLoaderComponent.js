@@ -15,8 +15,6 @@ export default (props={}) => {
 
     const settingsContext = useContext(SettingsContext)
 
-    console.info(`Got context ${settingsContext}`)
-
     const handelEvent = (event) => {
         console.debug("Handling loading password.")
         console.info(event)
@@ -24,6 +22,7 @@ export default (props={}) => {
 
     const ref = useRef()
 
+    // Manage event handling.
     useEffect(() => {
         const elem = ref.current
         elem.addEventListener(needPasswordEventType, handelEvent)

@@ -5,7 +5,8 @@ export const needPasswordEventType = "needSettingsPassword"
 export const NeedPasswordEvent = new CustomEvent(needPasswordEventType, { bubbles: true, detail: {}})
 
 // A function to dispatch the need password event.
-export function dispatchNeedPasswordEvent(elem) {
+export function dispatchNeedPasswordEvent(elem, callback) {
+    NeedPasswordEvent.onPassword = callback
     return elem.dispatchEvent(NeedPasswordEvent)
 }
 
