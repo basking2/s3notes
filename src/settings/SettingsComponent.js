@@ -1,10 +1,10 @@
 import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
-import React, { useRef } from "react";
-
-const s3NotesConfig = "s3NotesConfig"
+import React, { useContext, useEffect, useRef } from "react";
+import SettingsContext from "./SettingsContext";
+import { s3NotesConfig } from "./SettingsStorer";
+import { dispatchNeedPasswordEvent } from "./SettingsEvent";
 
 function S3TabPanel({handleSettingsChange, config}) {
-
     const params = {
         style: { marginTop: "1em"},
         variant: 'standard',
@@ -17,12 +17,6 @@ function S3TabPanel({handleSettingsChange, config}) {
     const accessKeyIdRef = useRef()
     const secretAccessKeyRef = useRef()
     const s3ForcePathStyleRef = useRef()
-
-
-    let s3ForcePathStyleDefault = { 'defaultChecked': true }
-    if ('s3ForcePathStyle' in config && !config['s3ForcePathStyle']) {
-        s3ForcePathStyleDefault = {}
-    }
 
     return (<div>
         <TextField
@@ -41,7 +35,7 @@ function S3TabPanel({handleSettingsChange, config}) {
             {...params}
             defaultValue={config['secret-access-key']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
         <Checkbox
-            {...s3ForcePathStyleDefault}
+            defaultChecked = {!('s3ForcePathStyle' in config && !config['s3ForcePathStyle'])}
             style= { { marginTop: "1em" } }
             variant= 'standard'
             inputRef={s3ForcePathStyleRef}
@@ -52,13 +46,13 @@ function S3TabPanel({handleSettingsChange, config}) {
             style={{ marginTop: "1em"}}
             variant="contained"
             onClick={(e) => {
-                config.epoch += 1
-                config.bucket = bucketRef.current.value
-                config.endpoint = endpointRef.current.value
-                config.region = regionRef.current.value
-                config.accessKeyId = accessKeyIdRef.current.value
-                config.secretAccessKey = secretAccessKeyRef.current.value
-                config.s3ForcePathStyle = s3ForcePathStyleRef.current.checked
+                config.settings.epoch += 1
+                config.settings.bucket = bucketRef.current.value
+                config.settings.endpoint = endpointRef.current.value
+                config.settings.region = regionRef.current.value
+                config.settings.accessKeyId = accessKeyIdRef.current.value
+                config.settings.secretAccessKey = secretAccessKeyRef.current.value
+                config.settings.s3ForcePathStyle = s3ForcePathStyleRef.current.checked
                 handleSettingsChange(e, config)
             }} >Set Configuration</Button>
 
@@ -78,7 +72,9 @@ function SelfTabPanel({handleSettingsChange, config}) {
 function NoStoragePanel({handleSettingsChange, config}) {
     return (<div>
         <button onClick={(e) => {
-            handleSettingsChange(e, {epoch: config.epoch+1, type: config.type})
+            config.settings.type = config.settings.type
+            config.epoch += 1
+            handleSettingsChange(e, { ... config})
         }} >Clear Settings</button>
 
     </div>)
@@ -88,80 +84,75 @@ function TabPanel(props = {}) {
     return (<div hidden={props.value !== props.type}>{props.name || "Name" }{props.children}</div>)
 }
 
-function Settings() {
+function SettingsComponent() {
+    // Initially set in App.js.
+    const [settings, setSettings] = useContext(SettingsContext)
 
-    const [configSettings, setConfgSettings] = React.useState(() => {
-        if (s3NotesConfig in localStorage) {
-            let config = JSON.parse(localStorage.getItem(s3NotesConfig))
-            config.epoch = 0
-            return config
-        }
-
-        return {type: "none", epoch: 0}
-    })
-
-    let epoch = 0
+    console.info(settings)
 
     const handleSettingsChange = (event, newValue) => {
-        if (newValue.epoch !== epoch) {
+        if (newValue.epoch !== settings.epoch) {
             // NOTE: Create a new object and prevent cyclical updates using epoch.
-            epoch = newValue.epoch
+            settings.epoch = newValue.epoch
             delete(newValue.epoch)
-            setConfgSettings({epoch, ...newValue})
+            setSettings({... newValue, epoch: settings.epoch})
             localStorage.setItem(s3NotesConfig, JSON.stringify(newValue))
         }
     }
 
     const handleTypeChange = (event, newType) => {
-        setConfgSettings({...configSettings, type: newType})
+        settings.settings.type = newType
+        setSettings(settings)
     }
 
-    return (<div>
+    return (
+        <div>
         <h1>Settings</h1>
         <h2>Secrets</h2>
         <TextField variant="standard" name="password" type="password"
             label="Document Encryption Password"
-            defaultValue={configSettings.password}
+            defaultValue={settings.password}
             onChange={(event) => {
-                configSettings.epoch += 1
-                configSettings.password = event.target.value
-                handleSettingsChange(event, configSettings)
+                settings.epoch += 1
+                settings.password = event.target.value
+                handleSettingsChange(event, settings)
             }}
         />
 
         <Checkbox
-            defaultChecked={configSettings.encryptSettings}
+            defaultChecked={settings.encryptSettings}
             variant= 'standard'
             name="encryptSettings"
             aria-label="Encrypt configuration"
             label="Encrypt Configuration"
             onChange={(event) => {
-                configSettings.encryptSettings = event.target.checked
-                configSettings.epoch += 1
-                handleSettingsChange(event, configSettings)
+                settings.encryptSettings = event.target.checked
+                settings.epoch += 1
+                handleSettingsChange(event, settings)
             }}
             />
 
         <h2>Storage Settings</h2>
-        <Tabs value={configSettings.type} onChange={handleTypeChange} aria-label="storage settings">
+        <Tabs value={settings.settings.type} onChange={handleTypeChange} aria-label="storage settings">
             <Tab label="None" value="none"></Tab>
             <Tab label="S3" value="s3"></Tab>
             <Tab label="Self" value="self"></Tab>
         </Tabs>
-        <TabPanel value={configSettings.type} name="None" type="none">
-            <NoStoragePanel handleSettingsChange={handleSettingsChange} config={configSettings}/>
+        <TabPanel value={settings.settings.type} name="None" type="none">
+            <NoStoragePanel handleSettingsChange={handleSettingsChange} config={settings}/>
         </TabPanel>
-        <TabPanel value={configSettings.type} name="S3" type="s3">
-            <S3TabPanel handleSettingsChange={handleSettingsChange} config={configSettings}/>
+        <TabPanel value={settings.settings.type} name="S3" type="s3">
+            <S3TabPanel handleSettingsChange={handleSettingsChange} config={settings}/>
         </TabPanel>
-        <TabPanel value={configSettings.type} name="Self" type="self">
-            <SelfTabPanel handleSettingsChange={handleSettingsChange} config={configSettings}/>
+        <TabPanel value={settings.settings.type} name="Self" type="self">
+            <SelfTabPanel handleSettingsChange={handleSettingsChange} config={settings}/>
         </TabPanel>
 
         <pre>
-         {JSON.stringify(configSettings, 2, 2)}
+         {JSON.stringify(settings, 2, 2)}
         </pre>
-    </div>)
+        </div>
+    )
 }
 
-export default Settings
+export default SettingsComponent

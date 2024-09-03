@@ -1,6 +1,6 @@
 import './AppRoutes.css'
 import { /* createBrowserRouter, */ createHashRouter, Link, RouterProvider } from "react-router-dom";
-import Settings from './Settings';
+import SettingsComponent from './settings/SettingsComponent';
 
 const router = createHashRouter([
     {
@@ -14,7 +14,7 @@ const router = createHashRouter([
     },
     {
         path: "/settings",
-        element: (<Settings></Settings>)
+        element: (<SettingsComponent></SettingsComponent>)
     },
     {
         path: "/about",
