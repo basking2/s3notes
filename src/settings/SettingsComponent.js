@@ -1,7 +1,6 @@
 import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
 import React, { useContext, useEffect, useRef } from "react";
 import SettingsContext from "./SettingsContext";
-import { s3NotesConfig } from "./SettingsStorer";
 import { dispatchNeedPasswordEvent } from "./SettingsEvent";
 
 function S3TabPanel({handleSettingsChange, config}) {

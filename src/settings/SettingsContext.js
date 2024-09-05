@@ -9,6 +9,8 @@ const SettingsContext = createContext({})
 
 let password = null
 
+const docCrypt = DocCrypt.aes256cbc()
+
 function emptyConfig() {
     return {password: null, settings: {type: "none"}}
 }
@@ -21,8 +23,25 @@ function emptyConfig() {
 export const useSettingsContext = () => {
     const [state, setState] = useState(() => {
 
+        let config = ''
+
         if (s3NotesConfig in localStorage) {
-            let config = JSON.parse(localStorage.getItem(s3NotesConfig))
+            config = JSON.parse(localStorage.getItem(s3NotesConfig))
+
+            if ('ciphertext' in config) {
+                if (password) {
+                    docCrypt.decryptString({...config, password})
+                        .then(val =>{
+                            val = JSON.parse(val)
+                            setState(val)
+                        })
+                    config = emptyConfig()
+                } else {
+                    // Return encrypted config.
+                    return config
+                }
+
+            }
 
             return config
         }
@@ -33,10 +52,24 @@ export const useSettingsContext = () => {
     return [
         state,
         (newState) => {
-            if (password) {
-            }
-            const dc = DocCrypt.aes256cbc()
+
             setState(newState)
+
+            if (password) {
+                const salt = DocCrypt.salt(32)
+                let stateStr = JSON.stringify(newState)
+                docCrypt.encryptString(password, salt, stateStr).then(stateStr => {
+                    // We choose to store our password salt.
+                    stateStr['salt'] = salt
+                    stateStr = JSON.stringify(stateStr)
+                    localStorage.setItem(s3NotesConfig, stateStr)
+                }).catch(e => {
+                    console.error(e)
+                })
+            } else {
+                let stateStr = JSON.stringify(newState)
+                localStorage.setItem(s3NotesConfig, stateStr)
+            }
         }
     ]
 }
