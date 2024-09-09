@@ -29,7 +29,7 @@ export default function NoticeComponent(props={}) {
 
     return (<div ref={ref}>
 
-        <Dialog open={event.message}>
+        <Dialog open={!!event && !!event.message}>
             {event.message}
         </Dialog>
 

@@ -35,6 +35,10 @@ function storeSettings(password, settings, callback) {
     }
 }
 
+function emptySettings() {
+    return {password: null, settings: {type: "none"}}
+}
+
 function loadSettings(password, callback) {
     let config = ''
 
@@ -43,13 +47,17 @@ function loadSettings(password, callback) {
 
         if ('ciphertext' in config) {
             if (password) {
-                docCrypt.decryptString({...config, password})
-                    .catch(callback)
-                    .then(val =>{
-                        val = JSON.parse(val)
-                        callback(null, val)
-                        return val
-                    })
+                try {
+                    docCrypt.decryptString({...config, password})
+                        .then(val =>{
+                            val = JSON.parse(val)
+                            callback(null, val)
+                            return val
+                        })
+                        .catch(callback)
+                } catch (e) {
+                    callback(e, null)
+                }
             } else {
                 callback(new Error("no password"), null)
             }
@@ -58,12 +66,8 @@ function loadSettings(password, callback) {
             callback(null, config)
         }
     } else {
-        callback(null, emptyConfig())
+        callback(null, emptySettings())
     }
-}
-
-function emptyConfig() {
-    return {password: null, settings: {type: "none"}}
 }
 
 export default function SettingsStorageComponent(props={}) {
@@ -155,7 +159,7 @@ export default function SettingsStorageComponent(props={}) {
                         loadSettings(passwordFieldRef.current.value, (err, settings) => {
                             if (err) {
                                 console.error(err)
-                                console.error(err)
+                                setSettings(emptySettings())
                             } else {
                                 setSettings(settings)
                                 setPassword(passwordFieldRef.current.value)
@@ -165,7 +169,7 @@ export default function SettingsStorageComponent(props={}) {
                         })
                     }}>Set Password</Button>
                     <Button style={{display: "inline"}} variant="outlined" onClick={() => {
-                        setSettings(emptyConfig())
+                        setSettings(emptySettings())
                         setPrompt(false)
                     }}>Cancel</Button>
                 </div>
