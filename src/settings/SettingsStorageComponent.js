@@ -15,6 +15,12 @@ const docCrypt = DocCrypt.aes256cbc()
 
 export const s3NotesConfig = "s3NotesConfig"
 
+export const storeSettingsEventType = "storeSettingsEventType"
+export function dispatchStoreSettings(elem) {
+    const event = new CustomEvent(storeSettingsEventType, { bubbles: true, detail: {}})
+    return elem.dispatchEvent(event)
+}
+
 function storeSettings(password, settings, callback) {
     if (password) {
         const salt = DocCrypt.salt(32)
@@ -36,7 +42,7 @@ function storeSettings(password, settings, callback) {
 }
 
 function emptySettings() {
-    return {password: null, settings: {type: "none"}}
+    return {settings: {type: "none"}}
 }
 
 function loadSettings(password, callback) {
@@ -91,6 +97,18 @@ export default function SettingsStorageComponent(props={}) {
         return () => elem.removeEventListener(needPasswordEventType, handelEvent)
     })
 
+    // Manage event handling.
+    useEffect(() => {
+        const elem = ref.current
+
+        const handler = (evnt) => {
+            saveSettings(password, settings)
+        }
+
+        elem.addEventListener(storeSettingsEventType, handler)
+        return () => elem.removeEventListener(storeSettingsEventType, handler)
+    })
+
     // This effect will load the configurations, optionally prompting for a password.
     useEffect(() => {
 
@@ -115,6 +133,17 @@ export default function SettingsStorageComponent(props={}) {
     const passwordField2Ref = useRef()
     const passwordFieldRef = useRef()
 
+    // Store and set settings with the given password.
+    function saveSettings(password, settings) {
+        storeSettings(password, settings, (err, settings) => {
+            if (err) {
+                console.error(err)
+            } else {
+                setSettings(settings)
+            }
+            setPrompt(false)
+    })}
+
     return <div ref={ref}>
         <Dialog open={prompt === "set-store-password"}>
             <div style={{margin:'1em'}}>
@@ -130,16 +159,14 @@ export default function SettingsStorageComponent(props={}) {
                             throw new Error("Passwords do not match.")
                         }
 
-                        storeSettings(passwordField1Ref.current.value, settings, (err, settings) => {
-                            if (err) {
-                                console.error(err)
-                            } else {
-                                setSettings(settings)
-                                setPassword(passwordField1Ref.current.value)
-                            }
+                        let password = passwordField1Ref.current.value
+                        if (password && password.length === 0) {
+                            password = null
+                        }
 
-                            setPrompt(false)
-                        })
+                        setPassword(password)
+                        saveSettings(password, settings)
+
                     }}>Set Password</Button>
                     <Button style={{display: "inline"}} variant="outlined" onClick={() => {
                         setPrompt(false)

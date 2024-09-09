@@ -2,6 +2,7 @@ import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
 import React, { useContext, useRef } from "react";
 import SettingsContext from "./SettingsContext";
 import { dispatchNeedPasswordEvent } from "./SettingsEvent";
+import { dispatchStoreSettings  } from "./SettingsStorageComponent";
 
 function S3TabPanel({handleSettingsChange, config}) {
     const params = {
@@ -97,6 +98,7 @@ function SettingsComponent() {
 
     const handleSettingsChange = (event, newValue) => {
         setSettings({...newValue})
+        dispatchStoreSettings(event.target)
     }
 
     const handleTypeChange = (event, newType) => {
