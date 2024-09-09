@@ -1,5 +1,5 @@
 import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import SettingsContext from "./SettingsContext";
 import { dispatchNeedPasswordEvent } from "./SettingsEvent";
 
@@ -104,9 +104,13 @@ function SettingsComponent() {
         setSettings({...settings})
     }
 
+
     return (
         <div>
         <h1>Settings</h1>
+
+        <h2>Settings Password</h2>
+        <Button aria-label="Change settings password." label="Change settings password" onClick={event => dispatchNeedPasswordEvent(event.target)}>Change Settings Password</Button>
 
         <h2>Storage Settings</h2>
         <Tabs value={settings.settings.type} onChange={handleTypeChange} aria-label="storage settings">
