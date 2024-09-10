@@ -66,6 +66,7 @@ function SelfTabPanel({handleSettingsChange, config}) {
             variant="contained"
             onClick={(e) => {
                 config.settings.type = 'self'
+                config.settings.endpoint = `${process.env.PUBLIC_URL}/storage`
                 handleSettingsChange(e, {...config})
             }} >Store Settings</Button>
 
@@ -98,7 +99,7 @@ function SettingsComponent() {
     }
 
     const handleSettingsChange = (event, newValue) => {
-        const settings = {... newValue}
+        const settings = {...newValue}
         dispatchStoreSettings(event.target, settings)
     }
 

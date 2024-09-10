@@ -1,5 +1,6 @@
 import EncryptedStorage from "./EncryptedStorage"
 import S3Storage from "./S3Storage"
+import SelfStorage from "./SelfStorage"
 import StorageInterface from "./StorageInterface"
 
 /**
@@ -11,6 +12,10 @@ export function fromSettings(settings) {
     let storage
     if (!settings) {
         storage = new StorageInterface()
+    }
+
+    if ('settings' in settings) {
+        settings = settings.settings
     }
 
     if (settings.type === 's3') {
@@ -35,7 +40,7 @@ export function fromSettings(settings) {
 
         storage = new S3Storage(opts)
     } else if (settings.type === 'self') {
-        storage = new StorageInterface()
+        storage = new SelfStorage({endpoint: settings.endpoint})
     } else {
         storage = new StorageInterface()
     }
@@ -47,6 +52,5 @@ export function fromSettings(settings) {
     return storage
 }
 
-export default {
-    fromSettings
-}
+const obj = { fromSettings }
+export default obj

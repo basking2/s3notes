@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ace-builds": "https://github.com/ajaxorg/ace-builds#v1.36.2",
     "@aws-sdk/client-s3": "^3.637.0",
     "@basking2/docryptjs": "github:basking2/doccryptjs#main",
     "@emotion/react": "^11.13.3",
@@ -13,6 +12,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ace-builds": "https://github.com/ajaxorg/ace-builds#v1.36.2",
+    "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",

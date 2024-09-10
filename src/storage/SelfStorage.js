@@ -2,16 +2,23 @@
  * Client to the SelfServed.js middleware.
  */
 
-
-const StorageInterface = require("./StorageInterface")
+import axios from 'axios'
+import StorageInterface from './StorageInterface'
 
 class SelfStorage extends StorageInterface {
-    constructor({endpont}) {
+    constructor({endpoint}) {
         super()
         this.endpoint = endpoint
     }
 
     store({key, text, meta}, callback) {
+        axios({
+            method: 'put',
+            url: `${this.endpoint}?file=${key}`,
+            data: text,
+        })
+        .then(v => callback(null))
+        .catch(callback)
     }
 
     /**
@@ -22,6 +29,12 @@ class SelfStorage extends StorageInterface {
      * about the loaded file, such as the type it was stored under.
      */
     load(key, callback) {
+        axios({
+            method: 'get',
+            url: `${this.endpoint}?file=${key}`,
+        })
+        .then(v => callback(null, v.data))
+        .catch(callback)
     }
 
     /**
@@ -45,4 +58,4 @@ class SelfStorage extends StorageInterface {
 
 }
 
-module.exports = SelfStorage
+export default SelfStorage
