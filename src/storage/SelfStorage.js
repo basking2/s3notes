@@ -1,27 +1,17 @@
-const StorageInterface = require("./StorageInterface")
-const S3 = require('@aws-sdk/client-s3')
+/**
+ * Client to the SelfServed.js middleware.
+ */
 
-class S3Storage extends StorageInterface {
-    constructor({bucket, endpoint, region, accessKeyId, secretAccessKey, s3ForcePathStyle}) {
+
+const StorageInterface = require("./StorageInterface")
+
+class SelfStorage extends StorageInterface {
+    constructor({endpont}) {
         super()
-        this.bucket = bucket
-        this.s3 = new S3.S3Client({
-            credentials: {
-                accessKeyId,
-                secretAccessKey
-            },
-            region,
-            endpoint,
-            s3ForcePathStyle,
-            signatureVersion: 'v4',
-        })
+        this.endpoint = endpoint
     }
 
     store({key, text, meta}, callback) {
-        const op = new S3.PutObjectCommand({Bucket: this.bucket, Key: key, Body: text})
-        this.s3.send(op)
-            .catch(e => callback(e))
-            .then(callback())
     }
 
     /**
@@ -32,12 +22,6 @@ class S3Storage extends StorageInterface {
      * about the loaded file, such as the type it was stored under.
      */
     load(key, callback) {
-        const op = new S3.GetObjectCommand({Bucket: this.bucket, Key: this.key})
-        this.s3.send(op)
-            .then(resp => {
-                callback(null, resp.Body)
-            })
-            .catch(e => callback(e, null))
     }
 
     /**
@@ -61,4 +45,4 @@ class S3Storage extends StorageInterface {
 
 }
 
-module.exports = S3Storage
+module.exports = SelfStorage

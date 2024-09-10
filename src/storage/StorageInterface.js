@@ -1,10 +1,5 @@
 
-const http = require("node:http")
-
-
 class StorageInterface {
-    constructor(params={}) {
-    }
 
     /**
      * 

@@ -16,15 +16,20 @@ const docCrypt = DocCrypt.aes256cbc()
 export const s3NotesConfig = "s3NotesConfig"
 
 export const storeSettingsEventType = "storeSettingsEventType"
-export function dispatchStoreSettings(elem) {
-    const event = new CustomEvent(storeSettingsEventType, { bubbles: true, detail: {}})
+export function dispatchStoreSettings(elem, settings) {
+    const event = new CustomEvent(storeSettingsEventType, { bubbles: true, detail: {settings}})
+
+    if (!settings) {
+        throw new Error("need settings")
+    }
+
     return elem.dispatchEvent(event)
 }
 
 function storeSettings(password, settings, callback) {
+    let stateStr = JSON.stringify(settings)
     if (password) {
         const salt = DocCrypt.salt(32)
-        let stateStr = JSON.stringify(settings)
         docCrypt.encryptString(password, salt, stateStr).then(stateStr => {
             // We choose to store our password salt.
             stateStr['salt'] = salt
@@ -35,7 +40,6 @@ function storeSettings(password, settings, callback) {
             callback(e)
         })
     } else {
-        let stateStr = JSON.stringify(settings)
         localStorage.setItem(s3NotesConfig, stateStr)
         callback(null)
     }
@@ -102,7 +106,11 @@ export default function SettingsStorageComponent(props={}) {
         const elem = ref.current
 
         const handler = (evnt) => {
-            saveSettings(password, settings)
+            if (!evnt.detail.settings) {
+                throw new Error(`Settings is required in ${storeSettingsEventType} event.`)
+            }
+
+            saveSettings(password, evnt.detail.settings)
         }
 
         elem.addEventListener(storeSettingsEventType, handler)

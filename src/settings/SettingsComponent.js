@@ -1,6 +1,7 @@
-import { Button, Checkbox, Tab, Tabs, TextField } from "@mui/material"
+import { Button, Checkbox, Input, Tab, Tabs, TextField } from "@mui/material"
 import React, { useContext, useRef } from "react";
 import SettingsContext from "./SettingsContext";
+import SettingsImportExport from "./SettingsImportExport";
 import { dispatchNeedPasswordEvent } from "./SettingsEvent";
 import { dispatchStoreSettings  } from "./SettingsStorageComponent";
 
@@ -21,21 +22,21 @@ function S3TabPanel({handleSettingsChange, config}) {
     return (<div>
         <TextField
             {...params}
-            defaultValue={config.bucket} inputRef={bucketRef} name="bucket" aria-label="S3 Bucket" label="Bucket" /><br />
+            defaultValue={config.settings.bucket} inputRef={bucketRef} name="bucket" aria-label="S3 Bucket" label="Bucket" /><br />
         <TextField
             {...params}
-            defaultValue={config.endpoint} inputRef={endpointRef} name="endpoint" aria-label="S3 Endpoint" label="S3 Endpoint" /><br />
+            defaultValue={config.settings.endpoint} inputRef={endpointRef} name="endpoint" aria-label="S3 Endpoint" label="S3 Endpoint" /><br />
         <TextField
             {...params}
-            defaultValue={config.region || "us-east-1"} inputRef={regionRef} name="region" aria-label="AWS Region" label="AWS Region" /><br />
+            defaultValue={config.settings.region || "us-east-1"} inputRef={regionRef} name="region" aria-label="AWS Region" label="AWS Region" /><br />
         <TextField
             {...params}
-            defaultValue={config['access-key-id']} inputRef={accessKeyIdRef} name="access-key-id" aria-label="Access Key ID" label="Access Key ID" /><br />
+            defaultValue={config.settings['accessKeyId']} inputRef={accessKeyIdRef} name="access-key-id" aria-label="Access Key ID" label="Access Key ID" /><br />
         <TextField
             {...params}
-            defaultValue={config['secret-access-key']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
+            defaultValue={config.settings['secretAccessKey']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
         <Checkbox
-            defaultChecked = {!('s3ForcePathStyle' in config && !config['s3ForcePathStyle'])}
+            defaultChecked = {!('s3ForcePathStyle' in config.settings && !config.settings['s3ForcePathStyle'])}
             style= { { marginTop: "1em" } }
             variant= 'standard'
             inputRef={s3ForcePathStyleRef}
@@ -76,15 +77,15 @@ function NoStoragePanel({handleSettingsChange, config}) {
         <Button
             variant="contained"
             onClick={(e) => {
-                config.settings.type = 'none'
+                config.settings = {type: 'none'}
                 handleSettingsChange(e, { settings: {type: 'none'}})
         }} >Clear Settings</Button>
 
     </div>)
 }
 
-function TabPanel(props = {}) {
-    return (<div hidden={props.value !== props.type}>{props.name || "Name" }{props.children}</div>)
+function CustomTabPanel(props = {}) {
+    return (<div style={{margin: '1em'}} hidden={props.value !== props.type}>{props.children}</div>)
 }
 
 function SettingsComponent() {
@@ -93,19 +94,18 @@ function SettingsComponent() {
 
     // We need "type" for the tabs. 
     if (!('settings' in settings)) {
-        settings.settings = { 'type': 'none' }
+        settings.settings = { type: 'none' , settings: {}}
     }
 
     const handleSettingsChange = (event, newValue) => {
-        setSettings({...newValue})
-        dispatchStoreSettings(event.target)
+        const settings = {... newValue}
+        dispatchStoreSettings(event.target, settings)
     }
 
     const handleTypeChange = (event, newType) => {
         settings.settings.type = newType
         setSettings({...settings})
     }
-
 
     return (
         <div>
@@ -115,24 +115,35 @@ function SettingsComponent() {
         <Button aria-label="Change settings password." label="Change settings password" onClick={event => dispatchNeedPasswordEvent(event.target)}>Change Settings Password</Button>
 
         <h2>Storage Settings</h2>
+        <h3>Document Storage Password</h3>
+        <Input type="password" aria-label="document password" label="Document Password" name="document-password" 
+            defaultValue={settings.settings.documentPassword}
+            onChange={(e) => {
+                settings.settings.documentPassword = e.target.value
+            }}
+        />
+
         <Tabs value={settings.settings.type} onChange={handleTypeChange} aria-label="storage settings">
             <Tab label="None" value="none"></Tab>
             <Tab label="S3" value="s3"></Tab>
             <Tab label="Self" value="self"></Tab>
         </Tabs>
-        <TabPanel value={settings.settings.type} name="None" type="none">
+        <CustomTabPanel value={settings.settings.type} name="None" type="none" >
             <NoStoragePanel handleSettingsChange={handleSettingsChange} config={settings}/>
-        </TabPanel>
-        <TabPanel value={settings.settings.type} name="S3" type="s3">
+        </CustomTabPanel>
+        <CustomTabPanel value={settings.settings.type} name="S3" type="s3">
             <S3TabPanel handleSettingsChange={handleSettingsChange} config={settings}/>
-        </TabPanel>
-        <TabPanel value={settings.settings.type} name="Self" type="self">
+        </CustomTabPanel>
+        <CustomTabPanel value={settings.settings.type} name="Self" type="self">
             <SelfTabPanel handleSettingsChange={handleSettingsChange} config={settings}/>
-        </TabPanel>
+        </CustomTabPanel>
 
         <pre>
          {JSON.stringify(settings, 2, 2)}
         </pre>
+
+        <h2>Import/Export</h2>
+        { <SettingsImportExport /> }
         </div>
     )
 }

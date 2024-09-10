@@ -1,6 +1,7 @@
 import './AppRoutes.css'
 import { /* createBrowserRouter, */ createHashRouter, Link, RouterProvider } from "react-router-dom";
 import SettingsComponent from './settings/SettingsComponent';
+import Editor from './Editor';
 
 const router = createHashRouter([
     {
@@ -20,6 +21,10 @@ const router = createHashRouter([
         path: "/about",
         element: (<h1>About</h1>)
     },
+    {
+        path: "/edit",
+        element: <Editor />
+    }
 ])
 
 const AppRoutes = () => <div className="AppRoutes"><RouterProvider router={router} /></div>

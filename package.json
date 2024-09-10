@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ace-builds": "https://github.com/ajaxorg/ace-builds#v1.36.2",
     "@aws-sdk/client-s3": "^3.637.0",
     "@basking2/docryptjs": "github:basking2/doccryptjs#main",
     "@emotion/react": "^11.13.3",
