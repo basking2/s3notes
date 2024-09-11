@@ -14,6 +14,7 @@ export default function EditorComponent(params={}) {
         editor = ace.edit("ace-editor");
         editor.setTheme(aceThemes[defaultTheme])
         editor.session.setMode(new aceModes[defaultMode]())
+        editor.setValue(content)
     })
 
     const ref = useRef()
@@ -44,7 +45,6 @@ export default function EditorComponent(params={}) {
         ref={ref}
         style={{}}
         >
-    <pre>{content}</pre>
     <div
         onLoad={resizeEditor}
         id="ace-editor"
