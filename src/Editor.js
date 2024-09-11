@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import EditorComponent from "./EditorComponent";
 import SettingsContext from "./settings/SettingsContext";
-import { useContext, useDeferredValue, useState } from "react";
+import { lazy, Suspense, useContext, useDeferredValue, useEffect, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 
 export default function Editor(params={}) {
@@ -12,21 +12,19 @@ export default function Editor(params={}) {
     const [ settings, setSettings ] = useContext(SettingsContext)
     const storage = StorageFactory.fromSettings(settings)
 
-    const [ fileText, setFileText ] = useState("")
-    const deferredFileText = useDeferredValue(fileText)
+    const [ fileText, setFileText ] = useState()
 
-    storage.load(file, (err, txt) => {
-        if (err) {
-            console.error(err)
-        } else {
-            setFileText(txt)
-        }
+    useEffect(() => {
+        storage.load(file, (err, txt) => {
+            if (err) {
+                console.error(err)
+            } else {
+                setFileText(txt)
+            }
+        })
     })
 
     return (<>
-    <EditorComponent></EditorComponent>
-    {file}
-    {deferredFileText}
-    <pre>{JSON.stringify(params, 2,2)}</pre>
+    <EditorComponent content={fileText} onSave={fileText => {}} />
     </>)
 }
