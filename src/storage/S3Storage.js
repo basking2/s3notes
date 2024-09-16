@@ -23,42 +23,6 @@ class S3Storage extends StorageInterface {
             .catch(e => callback(e))
             .then(callback())
     }
-
-    /**
-     * 
-     * @param {string} key to load.
-     * @param {function(err, text, meta)} callback Called with the text
-     * of the file and an optional meta object that may have information
-     * about the loaded file, such as the type it was stored under.
-     */
-    load(key, callback) {
-        const op = new S3.GetObjectCommand({Bucket: this.bucket, Key: this.key})
-        this.s3.send(op)
-            .then(resp => {
-                callback(null, resp.Body)
-            })
-            .catch(e => callback(e, null))
-    }
-
-    /**
-     * 
-     * @param {string} key key to load.
-     * @param {function(err, meta)} callback Load the meta object stored.
-     */
-    loadMeta(key, callback) {
-        callback(new Error("Not implemented."))
-    }
-
-    /**
-     * 
-     * @param {Object} param0 Contains prefix, offset and limit.
-     * @param {function(err)} err Callback if an error is encountered.
-     * @param {function(key)} callback Called for every key listed.
-     */
-    list({prefix, offset, limit}, err, callback) {
-        err(new Error("Not implemented."))
-    }
-
 }
 
 module.exports = S3Storage

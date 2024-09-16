@@ -10,6 +10,7 @@ const router = createHashRouter([
             <div>
                 <h1>Home 2</h1>
                 <Link to='/about'>About 2</Link>
+                <Link to='/edit?file=x.adoc'>Edit x.adoc</Link>
             </div>
         ),
     },

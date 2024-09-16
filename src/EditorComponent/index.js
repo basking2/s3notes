@@ -1,7 +1,17 @@
+// Get the editor.
 import ace from "ace-builds/src-noconflict/ace"
-import { useEffect, useRef, useState } from "react";
+
+// Include this so the search dialogue is bundled in the app.
+// Otherwise, ^-F throws an error.
+import aceSearch from "ace-builds/src-noconflict/ext-searchbox"
+
+// Code syntax highlighting, etc.
 import aceModes from "./aceEditorModes";
+
+// Pretty themes.
 import aceThemes from './aceEditorThemes'
+
+import { useEffect, useRef } from "react";
 
 const defaultTheme = 'Cloud9 Day'
 const defaultMode = 'Asciidoc'
