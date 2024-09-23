@@ -17,7 +17,7 @@ const defaultTheme = 'Cloud9 Day'
 const defaultMode = 'Asciidoc'
 
 export default function EditorComponent(params={}) {
-    const {content, onSave} = params
+    const {content, aceRef} = params
 
     let editor = null
     useEffect(() => {
@@ -25,6 +25,10 @@ export default function EditorComponent(params={}) {
         editor.setTheme(aceThemes[defaultTheme])
         editor.session.setMode(new aceModes[defaultMode]())
         editor.setValue(content)
+
+        if (aceRef) {
+            aceRef.current = editor
+        }
     })
 
     const ref = useRef()

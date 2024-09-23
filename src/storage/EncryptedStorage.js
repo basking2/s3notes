@@ -28,11 +28,14 @@ class EncryptedStorage extends StorageInterface{
         
         const salt = DocCrypt.salt(32)
 
+        if (!meta) {
+            meta = {}
+        }
+
         Promise.all([
             this.doccrypt.encryptString(this.password, salt, text),
             this.doccrypt.encryptString(this.password, salt, JSON.stringify(meta))
         ])
-        .catch(callback)
         .then(([obj, meta]) => {
             const ciphertext = obj['ciphertext']
             const iv = obj['iv']
@@ -40,6 +43,7 @@ class EncryptedStorage extends StorageInterface{
             const file = JSON.stringify({ ciphertext, iv, encoding, meta, salt })
             this.storage.store({key, text: file, meta: {}}, callback)
         })
+        .catch(callback)
     }
 
     loadAll(key, callback) {
@@ -49,7 +53,7 @@ class EncryptedStorage extends StorageInterface{
             }
 
             try {
-                callback(null, JSON.parse(data))
+                callback(null, data)
             } catch (e) {
                 callback(e, data)
             }
@@ -58,9 +62,16 @@ class EncryptedStorage extends StorageInterface{
 
     load(key, callback) {
         const password = this.password
-        this.loadAll(key, (err, obj) => {
+        this.loadAll(key, (err, txt) => {
             if (err) {
-                return callback(err, obj)
+                return callback(err, txt)
+            }
+
+            var obj
+            try {
+                obj = JSON.parse(txt)
+            } catch(e) {
+                return callback(e, txt)
             }
 
             // Unencrypted document stored through the encryption scheme.
@@ -75,7 +86,7 @@ class EncryptedStorage extends StorageInterface{
 
             this.doccrypt.decryptString({iv, password, salt, encoding: (encoding || 'hex'), ciphertext})
                 .then(txt => callback(null, txt))
-                .catch(e => callback(e, null))
+                .catch(e => callback(e, txt))
         })
     }
 }

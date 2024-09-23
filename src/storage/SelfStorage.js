@@ -32,6 +32,7 @@ class SelfStorage extends StorageInterface {
         axios({
             method: 'get',
             url: `${this.endpoint}?file=${key}`,
+            transformResponse: (res) => res,
         })
         .then(v => callback(null, v.data))
         .catch(callback)

@@ -27,14 +27,20 @@ export default function NoticeComponent(props={}) {
         return () => elem.removeEventListener(errorEventType, handelEvent)
     })
 
-    return (<div ref={ref}>
+    try {
+        return (<div ref={ref}>
+            <Dialog open={!!event && !!event.message}>
+                {event.message}
+            </Dialog>
 
-        <Dialog open={!!event && !!event.message}>
-            {event.message}
-        </Dialog>
-
-        {props.children}
-
-    </div>)
+            {props.children}
+        </div>)
+    } catch (e) {
+        return (<div ref={ref}>
+            <Dialog open={true}>
+                Error: {e}
+            </Dialog>
+        </div>)
+    }
 
 }

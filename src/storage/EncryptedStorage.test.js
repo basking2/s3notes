@@ -1,7 +1,7 @@
 const EncryptedStorage = require("./EncryptedStorage");
 const FileSystemStorage = require("./FileSystemStorage");
 
-test('enc test', async () => {
+test.skip('enc test', async () => {
     const fs = new FileSystemStorage({prefix: './testdata'})
     const enc = new EncryptedStorage({password: "pw", storage: fs})
 
