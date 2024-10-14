@@ -1,5 +1,7 @@
 const StorageInterface = require("./StorageInterface");
 
+const storagepack = require('./storagepack')
+
 const fs = require("node:fs")
 const path = require("node:path")
 
@@ -29,6 +31,7 @@ class FileSystemStorage extends StorageInterface {
      */
     store({key, text, meta}, callback) {
         key = this.resolvePath(key)
+        text = storagepack.pack(meta, text)
 
         this.ensuredir(key, (err, path) => {
             if (err) {
@@ -42,11 +45,12 @@ class FileSystemStorage extends StorageInterface {
     /**
      * 
      * @param {string} key to load.
+     * @param {boolean} loadMeta True, the meta is loaded, false loading meta is optional.
      * @param {function(err, text, meta)} callback Called with the text
      * of the file and an optional meta object that may have information
      * about the loaded file, such as the type it was stored under.
      */
-    load(key, callback) {
+    load(key, loadMeta=true, callback) {
         key = this.resolvePath(key)
 
         this.ensuredir(key, (err, path) => {
@@ -54,7 +58,10 @@ class FileSystemStorage extends StorageInterface {
                 return callback(err, null)
             }
 
-            fs.readFile(key, {}, callback)
+            fs.readFile(key, {}, fileData => {
+                let [meta, data] = storagepack.unpack(fileData)
+                callback(null, data, meta)
+            })
         })
     }
 }

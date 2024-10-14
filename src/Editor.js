@@ -10,7 +10,10 @@ export default function Editor(params={}) {
     const location = useLocation()
     const searchParams = new URLSearchParams(location.search)
     const file = searchParams.get('file')
+
+    // eslint-disable-next-line
     const [ settings, setSettings ] = useContext(SettingsContext)
+
     const storage = StorageFactory.fromSettings(settings)
     const [ fileText, setFileText ] = useState()
     const [ saving, setSaving ] = useState(false)
@@ -58,7 +61,7 @@ export default function Editor(params={}) {
     })
 
     useEffect(() => {
-        storage.load(file, (err, txt) => {
+        storage.load(file, true, (err, txt, meta) => {
             if (err) {
                 if (txt) {
                     console.info("Got error and file data: ", err, txt)

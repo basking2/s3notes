@@ -13,11 +13,12 @@ class StorageInterface {
     /**
      * 
      * @param {string} key to load.
+     * @param {boolean} fetchMeta If true, the meta value is loaded (default). If false, it may be skipped.
      * @param {function(err, text, meta)} callback Called with the text
      * of the file and an optional meta object that may have information
      * about the loaded file, such as the type it was stored under.
      */
-    load(key, callback) {
+    load(key, fetchMeta=true, callback) {
         callback(new Error("Not implemented."))
     }
 }

@@ -47,20 +47,20 @@ class EncryptedStorage extends StorageInterface{
     }
 
     loadAll(key, callback) {
-        this.storage.load(key, (err, data) => {
+        this.storage.load(key, true, (err, data, meta) => {
             if (err) {
                 return callback(err, null)
             }
 
             try {
-                callback(null, data)
+                callback(null, data, meta)
             } catch (e) {
-                callback(e, data)
+                callback(e, data, meta)
             }
         })
     }
 
-    load(key, callback) {
+    load(key, loadMeta=true, callback) {
         const password = this.password
         this.loadAll(key, (err, txt) => {
             if (err) {
