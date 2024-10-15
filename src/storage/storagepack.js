@@ -19,11 +19,14 @@ function pack(meta, data) {
         data = new TextEncoder("utf-8").encode(data)
     }
 
-    let msg = new Uint8Array(8 + meta.length + data.length)
-    msg.set(Uint32Array.of(meta.length), 0)
-    msg.set(meta, 4)
-    msg.set(Uint32Array.of(data.length), 4 + meta.length)
-    msg.set(data, 8 + meta.length)
+    let msg = new ArrayBuffer(4 + meta.length + data.length);
+
+    new Uint32Array(msg, 0, 1)[0] = meta.length;
+    let msgArray = new Uint8Array(msg, 4);
+    msgArray.set(meta);
+    msgArray.set(data, meta.length);
+
+    //console.info("Wrote meta len ", new Uint32Array(msg, 0, 1)[0], " which shoudl equal ", meta.length)
 
     return msg
 }
@@ -32,7 +35,11 @@ function pack(meta, data) {
  * @param [meta, data] where meta is an object and data is a Uint8Array.
  */
 function unpack(buffer) {
-    let metaLen = new Uint32Array(buffer.slice(0, 4))[0]
+    if (typeof(buffer) === 'string') {
+        buffer = new TextEncoder().encode(buffer)
+    }
+
+    let metaLen = new Uint32Array(buffer, 0, 1)[0]
     let meta
     if (metaLen === 0) {
         meta = {}
@@ -40,8 +47,7 @@ function unpack(buffer) {
         meta = JSON.parse(new TextDecoder('utf-8').decode(buffer.slice(4, metaLen+4)))
     }
 
-    let dataLen = new Uint32Array(buffer.slice(4+metaLen, 8+metaLen))[0]
-    let data = buffer.slice(8+metaLen, 8+metaLen+dataLen)
+    let data = buffer.slice(4+metaLen)
 
     return [meta, data]
 }

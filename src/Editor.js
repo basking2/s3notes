@@ -4,6 +4,7 @@ import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 import { Checkbox, Dialog, MenuItem, Select } from "@mui/material";
+import storagepack from "./storage/storagepack"
 
 export default function Editor(params={}) {
 
@@ -28,7 +29,21 @@ export default function Editor(params={}) {
         event.stopPropagation()
         event.preventDefault()
         setSaving(true)
-        storage.store({key: file, text, noencrypt: !encryptRef.current.checked}, (err) => {
+
+        console.info(defaultFileType)
+        console.info(fileTypeRef.current.value)
+
+        //text = storagepack.pack({ type: fileType.current }, text)
+
+        let fileType = fileTypeRef.current.value
+        storage.store({
+            key: file,
+            meta: {
+                filetype: fileTypeRef.current.value
+            },
+            text,
+            noencrypt: !encryptRef.current.checked
+        }, (err) => {
             setSaving(false)
             if (err) {
                 console.error(err)
@@ -62,9 +77,9 @@ export default function Editor(params={}) {
 
     useEffect(() => {
         storage.load(file, true, (err, txt, meta) => {
+            console.info("Got error and file data: ", err, txt, meta)
             if (err) {
                 if (txt) {
-                    console.info("Got error and file data: ", err, txt)
                     setFileText(txt)
                     setIsEncrypted(false)
                 } else {
@@ -81,7 +96,7 @@ export default function Editor(params={}) {
             <h1><em>Saving...</em></h1>
         </Dialog>
         <Select 
-            value={defaultFileType}
+            defaultValue={defaultFileType}
             label="File Type"
             aria-label="File Type"
             inputRef={fileTypeRef}
@@ -90,7 +105,9 @@ export default function Editor(params={}) {
             <MenuItem value="adoc">AsciiDoc</MenuItem>
             <MenuItem value="md">Markdown</MenuItem>
         </Select>
-        Encrypt: <Checkbox checked={isEncrypted} inputRef={encryptRef} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
+        Encrypt: <Checkbox checked={isEncrypted} onChange={e => {
+            setIsEncrypted(e.target.checked)
+        }} inputRef={encryptRef} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
         <EditorComponent content={fileText} aceRef={aceRef} />
     </div>)
 }

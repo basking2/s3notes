@@ -4,6 +4,7 @@
 
 import axios from 'axios'
 import StorageInterface from './StorageInterface'
+import storagepack from './storagepack'
 
 class SelfStorage extends StorageInterface {
     constructor({endpoint}) {
@@ -12,6 +13,7 @@ class SelfStorage extends StorageInterface {
     }
 
     store({key, text, meta}, callback) {
+        text = storagepack.pack(meta, text)
         axios({
             method: 'put',
             url: `${this.endpoint}?file=${key}`,
@@ -35,7 +37,10 @@ class SelfStorage extends StorageInterface {
             url: `${this.endpoint}?file=${key}`,
             transformResponse: (res) => res,
         })
-        .then(v => callback(null, v.data))
+        .then(v => {
+            let [ meta, data ] = storagepack.unpack(v.data)
+            return callback(null, data, meta)
+        })
         .catch(callback)
     }
 }

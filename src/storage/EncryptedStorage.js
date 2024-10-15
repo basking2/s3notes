@@ -22,7 +22,7 @@ class EncryptedStorage extends StorageInterface{
     store({key, text, meta, noencrypt}, callback) {
 
         if (noencrypt) {
-            const file = JSON.stringify({text: text})
+            const file = JSON.stringify({text: text, meta: {text: JSON.stringify(meta)}})
             return this.storage.store({key, text: file, meta: {}}, callback)
         }
         
@@ -40,6 +40,7 @@ class EncryptedStorage extends StorageInterface{
             const ciphertext = obj['ciphertext']
             const iv = obj['iv']
             const encoding = obj['encoding']
+            meta.salt = salt
             const file = JSON.stringify({ ciphertext, iv, encoding, meta, salt })
             this.storage.store({key, text: file, meta: {}}, callback)
         })
@@ -53,41 +54,49 @@ class EncryptedStorage extends StorageInterface{
             }
 
             try {
-                callback(null, data, meta)
+                callback(null, data)
             } catch (e) {
-                callback(e, data, meta)
+                callback(e, data)
             }
         })
     }
 
     load(key, loadMeta=true, callback) {
-        const password = this.password
         this.loadAll(key, (err, txt) => {
             if (err) {
                 return callback(err, txt)
             }
 
-            var obj
+            if (txt instanceof Uint8Array) {
+                txt = new TextDecoder().decode(txt)
+            }
+
+            let obj
             try {
                 obj = JSON.parse(txt)
             } catch(e) {
-                return callback(e, txt)
+                return callback(e, txt, {})
             }
-
-            // Unencrypted document stored through the encryption scheme.
-            const { text, ciphertext, iv, encoding, salt } = obj
-            if (text) {
-                return callback(null, text)
-            }
-
-            if (!ciphertext || !iv || !salt) {
-                return callback(null, null)
-            }
-
-            this.doccrypt.decryptString({iv, password, salt, encoding: (encoding || 'hex'), ciphertext})
-                .then(txt => callback(null, txt))
-                .catch(e => callback(e, txt))
+            
+            this.decryptObj(obj.meta || {})
+                .catch(e => ({}))
+                .then(meta => this.decryptObj(obj).then(txt => [meta, txt]))
+                .then(([meta, txt]) => callback(null, txt, meta))
+                .catch(e => callback(e))
         })
+    }
+
+    decryptObj(obj) {
+        const { text, ciphertext, iv, encoding, salt } = obj
+        if (text) {
+            return Promise.resolve(text)
+        }
+
+        if (!ciphertext || !iv || !salt) {
+            return Promise.reject(new Error("Missing cryptographic data."))
+        }
+
+        return this.doccrypt.decryptString({iv, password: this.password, salt, encoding: (encoding || 'hex'), ciphertext})
     }
 }
 
