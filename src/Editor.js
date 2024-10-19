@@ -3,7 +3,7 @@ import EditorComponent from "./EditorComponent";
 import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
-import { Checkbox, Dialog, MenuItem, Select } from "@mui/material";
+import { Checkbox, Dialog, MenuItem, Select, Typography } from "@mui/material";
 
 export default function Editor(params={}) {
 
@@ -27,8 +27,6 @@ export default function Editor(params={}) {
         event.stopPropagation()
         event.preventDefault()
         setSaving(true)
-
-        console.info(defaultFileType)
 
         //text = storagepack.pack({ type: fileType.current }, text)
 
@@ -74,7 +72,6 @@ export default function Editor(params={}) {
 
     useEffect(() => {
         storage.load(file, true, (err, txt, meta) => {
-            console.info("Got error and file data: ", err, txt, meta)
 
             if (meta) {
                 if ('filetype' in meta) {
@@ -99,13 +96,17 @@ export default function Editor(params={}) {
     })
 
     return (<div ref={ref}>
+        <Typography variant="h4" component="h1">
+        Editing {file}
+        </Typography>
         <Dialog open={saving}>
             <h1><em>Saving...</em></h1>
         </Dialog>
-        <Select 
+        Type: <Select 
             value={fileType}
             label="File Type"
             aria-label="File Type"
+            variant="standard"
             onChange={e => setFileType(e.target.value)}
         >
             <MenuItem value="txt">Text</MenuItem>
