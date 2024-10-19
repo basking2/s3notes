@@ -71,6 +71,14 @@ export default function Editor(params={}) {
     })
 
     useEffect(() => {
+        const prevTitle = document.title
+
+        document.title = `Editing ${file}`
+
+        return () => { document.title = prevTitle }
+    })
+
+    useEffect(() => {
         storage.load(file, true, (err, txt, meta) => {
 
             if (meta) {
