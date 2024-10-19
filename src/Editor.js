@@ -4,7 +4,6 @@ import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 import { Checkbox, Dialog, MenuItem, Select } from "@mui/material";
-import storagepack from "./storage/storagepack"
 
 export default function Editor(params={}) {
 
@@ -19,11 +18,10 @@ export default function Editor(params={}) {
     const [ fileText, setFileText ] = useState()
     const [ saving, setSaving ] = useState(false)
     const ref = useRef()
-    const encryptRef = useRef()
     const aceRef = useRef()
     const [ isEncrypted, setIsEncrypted ] = useState(true)
     const defaultFileType = 'txt'
-    const fileTypeRef = useRef(defaultFileType)
+    const [ fileType, setFileType ] = useState(defaultFileType)
 
     function handleSave(event, text) {
         event.stopPropagation()
@@ -31,18 +29,17 @@ export default function Editor(params={}) {
         setSaving(true)
 
         console.info(defaultFileType)
-        console.info(fileTypeRef.current.value)
 
         //text = storagepack.pack({ type: fileType.current }, text)
 
-        let fileType = fileTypeRef.current.value
         storage.store({
             key: file,
             meta: {
-                filetype: fileTypeRef.current.value
+                filetype: fileType,
+                encrypt: isEncrypted,
             },
             text,
-            noencrypt: !encryptRef.current.checked
+            noencrypt: !isEncrypted,
         }, (err) => {
             setSaving(false)
             if (err) {
@@ -78,6 +75,16 @@ export default function Editor(params={}) {
     useEffect(() => {
         storage.load(file, true, (err, txt, meta) => {
             console.info("Got error and file data: ", err, txt, meta)
+
+            if (meta) {
+                if ('filetype' in meta) {
+                    setFileType(meta.filetype)
+                }
+
+                if ('encrypt' in meta) {
+                    setIsEncrypted(meta.encrypt)
+                }
+            }
             if (err) {
                 if (txt) {
                     setFileText(txt)
@@ -96,10 +103,10 @@ export default function Editor(params={}) {
             <h1><em>Saving...</em></h1>
         </Dialog>
         <Select 
-            defaultValue={defaultFileType}
+            value={fileType}
             label="File Type"
             aria-label="File Type"
-            inputRef={fileTypeRef}
+            onChange={e => setFileType(e.target.value)}
         >
             <MenuItem value="txt">Text</MenuItem>
             <MenuItem value="adoc">AsciiDoc</MenuItem>
@@ -107,7 +114,7 @@ export default function Editor(params={}) {
         </Select>
         Encrypt: <Checkbox checked={isEncrypted} onChange={e => {
             setIsEncrypted(e.target.checked)
-        }} inputRef={encryptRef} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
+        }} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
         <EditorComponent content={fileText} aceRef={aceRef} />
     </div>)
 }

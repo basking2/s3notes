@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Tab, Tabs, TextField } from "@mui/material"
+import { Box, Button, Checkbox, Typography, Input, Tab, Tabs, TextField } from "@mui/material"
 import React, { useContext, useRef } from "react";
 import SettingsContext from "./SettingsContext";
 import SettingsImportExport from "./SettingsImportExport";
@@ -35,9 +35,12 @@ function S3TabPanel({handleSettingsChange, config}) {
         <TextField
             {...params}
             defaultValue={config.settings['secretAccessKey']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
-        <Checkbox
+        <Typography variant="string" style={{marginTop: '1em', 'vertical-align': 'middle'}}>
+         Force Path Style:
+        </Typography>
+         <Checkbox
             defaultChecked = {!('s3ForcePathStyle' in config.settings && !config.settings['s3ForcePathStyle'])}
-            style= { { marginTop: "1em" } }
+            style= { { marginTop: "1em", 'vertical-align': 'middle' } }
             variant= 'standard'
             inputRef={s3ForcePathStyleRef}
             name="s3ForcePathStyle" aria-label="S3 Force Path Style" label="S3 Force Path Style"
@@ -61,7 +64,6 @@ function S3TabPanel({handleSettingsChange, config}) {
 
 function SelfTabPanel({handleSettingsChange, config}) {
     return (<div>
-        <i>Not yet implemented.</i>
         <Button
             variant="contained"
             onClick={(e) => {
@@ -108,15 +110,30 @@ function SettingsComponent() {
         setSettings({...settings})
     }
 
+    const style = {
+        'border-width': '1px',
+        'border-color': 'black',
+        'border-style': 'solid',
+        'border-radius': '0.5em',
+        'box-shadow': '0.2em 0.2em 0.2em 0em #a0a0a0',
+        'padding': '0.5em',
+        'width': '100%',
+        'margin-bottom': '1em',
+    }
+
     return (
         <div>
         <h1>Settings</h1>
 
+        <Box style={style}>
         <h2>Settings Password</h2>
         <Button aria-label="Change settings password." label="Change settings password" onClick={event => dispatchNeedPasswordEvent(event.target)}>Change Settings Password</Button>
+        </Box>
 
+
+        <Box style={style}>
         <h2>Storage Settings</h2>
-        <h3>Document Storage Password</h3>
+        Document Storage Password: &nbsp;
         <Input type="password" aria-label="document password" label="Document Password" name="document-password" 
             defaultValue={settings.settings.documentPassword}
             onChange={(e) => {
@@ -138,13 +155,16 @@ function SettingsComponent() {
         <CustomTabPanel value={settings.settings.type} name="Self" type="self">
             <SelfTabPanel handleSettingsChange={handleSettingsChange} config={settings}/>
         </CustomTabPanel>
+        </Box>
+
+        <Box style={style}>
+        <h2>Import/Export</h2>
+        { <SettingsImportExport /> }
 
         <pre>
          {JSON.stringify(settings, 2, 2)}
         </pre>
-
-        <h2>Import/Export</h2>
-        { <SettingsImportExport /> }
+        </Box>
         </div>
     )
 }

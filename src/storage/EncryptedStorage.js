@@ -80,6 +80,7 @@ class EncryptedStorage extends StorageInterface{
             
             this.decryptObj(obj.meta || {})
                 .catch(e => ({}))
+                .then(meta => JSON.parse(meta))
                 .then(meta => this.decryptObj(obj).then(txt => [meta, txt]))
                 .then(([meta, txt]) => callback(null, txt, meta))
                 .catch(e => callback(e))
