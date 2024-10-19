@@ -35,12 +35,12 @@ function S3TabPanel({handleSettingsChange, config}) {
         <TextField
             {...params}
             defaultValue={config.settings['secretAccessKey']} inputRef={secretAccessKeyRef} name="secret-access-key" aria-label="Secret Access Key" label="Secret Access Key" /><br />
-        <Typography variant="string" style={{marginTop: '1em', 'vertical-align': 'middle'}}>
+        <Typography variant="string" style={{marginTop: '1em', verticalAlign: 'middle'}}>
          Force Path Style:
         </Typography>
          <Checkbox
             defaultChecked = {!('s3ForcePathStyle' in config.settings && !config.settings['s3ForcePathStyle'])}
-            style= { { marginTop: "1em", 'vertical-align': 'middle' } }
+            style= { { marginTop: "1em", verticalAlign: 'middle' } }
             variant= 'standard'
             inputRef={s3ForcePathStyleRef}
             name="s3ForcePathStyle" aria-label="S3 Force Path Style" label="S3 Force Path Style"
@@ -111,14 +111,14 @@ function SettingsComponent() {
     }
 
     const style = {
-        'border-width': '1px',
-        'border-color': 'black',
-        'border-style': 'solid',
-        'border-radius': '0.5em',
-        'box-shadow': '0.2em 0.2em 0.2em 0em #a0a0a0',
-        'padding': '0.5em',
-        'width': '100%',
-        'margin-bottom': '1em',
+        borderWidth: '1px',
+        borderColor: 'black',
+        borderStyle: 'solid',
+        borderRadius: '0.5em',
+        boxShadow: '0.2em 0.2em 0.2em 0em #a0a0a0',
+        padding: '0.5em',
+        width: '100%',
+        marginBottom: '1em',
     }
 
     return (
