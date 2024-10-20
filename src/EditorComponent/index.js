@@ -19,11 +19,14 @@ const defaultMode = 'Asciidoc'
 export default function EditorComponent(params={}) {
     const {content, aceRef} = params
 
+    const theme = params.theme || defaultTheme
+    const mode = params.mode || defaultMode
+
     let editor = null
     useEffect(() => {
         editor = ace.edit("ace-editor");
-        editor.setTheme(aceThemes[defaultTheme])
-        editor.session.setMode(new aceModes[defaultMode]())
+        editor.setTheme(aceThemes[theme])
+        editor.session.setMode(new aceModes[mode]())
         editor.setValue(content)
 
         if (aceRef) {

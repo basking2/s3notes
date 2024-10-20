@@ -4,6 +4,7 @@ import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 import { Checkbox, Dialog, MenuItem, Select, Typography } from "@mui/material";
+import aceThemes from "./EditorComponent/aceEditorThemes";
 
 export default function Editor(params={}) {
 
@@ -21,7 +22,22 @@ export default function Editor(params={}) {
     const aceRef = useRef()
     const [ isEncrypted, setIsEncrypted ] = useState(true)
     const defaultFileType = 'txt'
-    const [ fileType, setFileType ] = useState(defaultFileType)
+    const [ fileType, _setFileType ] = useState(defaultFileType)
+    const [ editorMode, setEditorMode ] = useState('Text')
+    const defaultEditorTheme = 'Cloud9 Day'
+    const [ editorTheme, setEditorTheme ] = useState(defaultEditorTheme)
+
+    function setFileType(v) {
+        _setFileType(v)
+
+        if (v === 'adoc') {
+            setEditorMode('Asciidoc')
+        } else if (v === 'md') {
+            setEditorMode('Markdown')
+        } else {
+            setEditorMode('Text')
+        }
+    }
 
     function handleSave(event, text) {
         event.stopPropagation()
@@ -58,6 +74,19 @@ export default function Editor(params={}) {
     function keyUpListener(event) {
         //console.info("key up", event)
     }
+    
+    // On unload, cache the file text from the editor.
+    // This is to prevent changes to child components from causing the 
+    // editor to be re-freshed with old text.
+    useEffect(() => {
+        let ar = aceRef
+        return () => {
+            let t = ar.current.getValue()
+            if (t !== fileText) {
+                setFileText(ar.current.getValue())
+            }
+        }
+    })
 
     useEffect(() => {
         const ele = ref.current
@@ -79,7 +108,9 @@ export default function Editor(params={}) {
     })
 
     useEffect(() => {
+        console.info("Loading!")
         storage.load(file, true, (err, txt, meta) => {
+
 
             if (meta) {
                 if ('filetype' in meta) {
@@ -89,8 +120,12 @@ export default function Editor(params={}) {
                 if ('encrypt' in meta) {
                     setIsEncrypted(meta.encrypt)
                 }
+            } else {
+                console.error("Meta information for doocument was not given.")
             }
+
             if (err) {
+                console.error(err)
                 if (txt) {
                     setFileText(txt)
                     setIsEncrypted(false)
@@ -101,16 +136,27 @@ export default function Editor(params={}) {
                 setFileText(txt)
             }
         })
-    })
 
-    return (<div ref={ref}>
-        <Typography variant="h4" component="h1">
-        Editing {file}
-        </Typography>
-        <Dialog open={saving}>
-            <h1><em>Saving...</em></h1>
-        </Dialog>
-        Type: <Select 
+    // eslint-disable-next-line
+    }, [ /* Intentionally no dependencies. */ ])
+
+    function AceThemes() {
+        let themes = Object.keys(aceThemes).map(k => <MenuItem key={k} value={k}>{k}</MenuItem>)
+
+        return (<Select 
+            value={editorTheme}
+            label="Editor Theme"
+            aria-label="Editor Theme"
+            variant="standard"
+            onChange={e => setEditorTheme(e.target.value)}
+        >
+            {themes}
+        </Select>
+        )
+    }
+
+    function AceModes() {
+        return (<Select 
             value={fileType}
             label="File Type"
             aria-label="File Type"
@@ -120,10 +166,23 @@ export default function Editor(params={}) {
             <MenuItem value="txt">Text</MenuItem>
             <MenuItem value="adoc">AsciiDoc</MenuItem>
             <MenuItem value="md">Markdown</MenuItem>
-        </Select>
+        </Select>)
+    }
+
+    return (<div ref={ref}>
+        <Typography variant="h4" component="h1">
+        Editing {file}
+        </Typography>
+        <Dialog open={saving}>
+            <h1><em>Saving...</em></h1>
+        </Dialog>
+        Type: <AceModes />
+        Theme: <AceThemes />
         Encrypt: <Checkbox checked={isEncrypted} onChange={e => {
             setIsEncrypted(e.target.checked)
         }} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
-        <EditorComponent content={fileText} aceRef={aceRef} />
+
+        <EditorComponent content={fileText} aceRef={aceRef} mode={editorMode} theme={editorTheme}/>
+
     </div>)
 }
