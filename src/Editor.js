@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import EditorComponent from "./EditorComponent";
 import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -108,7 +108,6 @@ export default function Editor(params={}) {
     })
 
     useEffect(() => {
-        console.info("Loading!")
         storage.load(file, true, (err, txt, meta) => {
 
 
@@ -181,6 +180,8 @@ export default function Editor(params={}) {
         Encrypt: <Checkbox checked={isEncrypted} onChange={e => {
             setIsEncrypted(e.target.checked)
         }} name="encrypt" label="Encrypt" aria-label="Encrypt"></Checkbox>
+
+        <Link target="_new" to={`/view?file=${file}`}>View {file}</Link>
 
         <EditorComponent content={fileText} aceRef={aceRef} mode={editorMode} theme={editorTheme}/>
 

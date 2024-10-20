@@ -2,6 +2,7 @@ import './AppRoutes.css'
 import { /* createBrowserRouter, */ createHashRouter, Link, RouterProvider } from "react-router-dom";
 import SettingsComponent from './settings/SettingsComponent';
 import Editor from './Editor';
+import Viewer from './Viewer';
 
 const router = createHashRouter([
     {
@@ -9,8 +10,8 @@ const router = createHashRouter([
         element: (
             <div>
                 <h1>Home 2</h1>
-                <Link to='/about'>About 2</Link>
-                <Link to='/edit?file=x.adoc'>Edit x.adoc</Link>
+                <p><Link to='/about'>About 2</Link></p>
+                <p><Link to='/edit?file=x.adoc'>Edit x.adoc</Link></p>
             </div>
         ),
     },
@@ -25,7 +26,11 @@ const router = createHashRouter([
     {
         path: "/edit",
         element: <Editor />
-    }
+    },
+    {
+        path: "/view",
+        element: <Viewer />
+    },
 ])
 
 const AppRoutes = () => <div className="AppRoutes"><RouterProvider router={router} /></div>
