@@ -5,8 +5,8 @@ import StorageFactory from "./storage/StorageFactory"
 import { Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import AsciidocRenderView from "./renderviews/AsciidocRenderView";
-import { render } from "@testing-library/react";
 import MarkdownRenderView from "./renderviews/MarkdownRenderView";
+import JSONRenderView from "./renderviews/JSONRenderView";
 
 export default function Viewer(params={}) {
 
@@ -96,6 +96,8 @@ export default function Viewer(params={}) {
             return <AsciidocRenderView text={fileText}></AsciidocRenderView>
         } else if (fileType === 'md') {
             return <MarkdownRenderView text={fileText}></MarkdownRenderView>
+        } else if (fileType === 'json') {
+            return <JSONRenderView text={fileText}></JSONRenderView>
         } else {
             return <pre>fileText</pre>
         }

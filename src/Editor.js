@@ -34,6 +34,8 @@ export default function Editor(params={}) {
             setEditorMode('Asciidoc')
         } else if (v === 'md') {
             setEditorMode('Markdown')
+        } else if ( v === 'json') {
+            setEditorMode('JSON')
         } else {
             setEditorMode('Text')
         }
@@ -165,6 +167,7 @@ export default function Editor(params={}) {
             <MenuItem value="txt">Text</MenuItem>
             <MenuItem value="adoc">AsciiDoc</MenuItem>
             <MenuItem value="md">Markdown</MenuItem>
+            <MenuItem value="json">JSON</MenuItem>
         </Select>)
     }
 

@@ -45,7 +45,9 @@ aceModes['assembly_x86'] = require('ace-builds/src-noconflict/mode-assembly_x86'
 aceModes['jexl'] = require('ace-builds/src-noconflict/mode-jexl').Mode
 aceModes['redshift'] = require('ace-builds/src-noconflict/mode-redshift').Mode
 aceModes['astro'] = require('ace-builds/src-noconflict/mode-astro').Mode
-aceModes['json5'] = require('ace-builds/src-noconflict/mode-json5').Mode
+*/
+aceModes['JSON'] = require('ace-builds/src-noconflict/mode-json5').Mode
+/*
 aceModes['rhtml'] = require('ace-builds/src-noconflict/mode-rhtml').Mode
 aceModes['autohotkey'] = require('ace-builds/src-noconflict/mode-autohotkey').Mode
 aceModes['jsoniq'] = require('ace-builds/src-noconflict/mode-jsoniq').Mode
