@@ -4,6 +4,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 import { Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import AsciidocRenderView from "./renderviews/AsciidocRenderView";
+import { render } from "@testing-library/react";
+import MarkdownRenderView from "./renderviews/MarkdownRenderView";
 
 export default function Viewer(params={}) {
 
@@ -24,10 +27,6 @@ export default function Viewer(params={}) {
     function setFileType(v) {
         _setFileType(v)
 
-        if (v === 'adoc') {
-        } else if (v === 'md') {
-        } else {
-        }
     }
 
     function keyDownListener(event) {
@@ -92,12 +91,21 @@ export default function Viewer(params={}) {
     // eslint-disable-next-line
     }, [ /* Intentionally no dependencies. */ ])
 
+    function RenderFile(params) {
+        if (fileType === 'adoc') {
+            return <AsciidocRenderView text={fileText}></AsciidocRenderView>
+        } else if (fileType === 'md') {
+            return <MarkdownRenderView text={fileText}></MarkdownRenderView>
+        } else {
+            return <pre>fileText</pre>
+        }
+    }
+
     return (<div ref={ref}>
         <Typography variant="h4" component="h1">
         Viewing {file}
         </Typography>
-        <pre>
-        {fileText}
-        </pre>
+
+        <RenderFile></RenderFile>
     </div>)
 }
