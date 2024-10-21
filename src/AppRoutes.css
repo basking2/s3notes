@@ -2,4 +2,7 @@
     display: inline-block;
     vertical-align: top;
     margin-left: 1em;
+    --predefined-width: 100%;
+    max-width: calc(var(--predefined-width) - calc(10em));
+    overflow: auto;
 }

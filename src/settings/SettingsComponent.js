@@ -117,7 +117,6 @@ function SettingsComponent() {
         borderRadius: '0.5em',
         boxShadow: '0.2em 0.2em 0.2em 0em #a0a0a0',
         padding: '0.5em',
-        width: '100%',
         marginBottom: '1em',
     }
 
