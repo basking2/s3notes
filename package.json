@@ -51,7 +51,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "yargs": "^17.7.2"
   },
   "jest": {
     "moduleNameMapper": {
