@@ -46,7 +46,7 @@ export default function Viewer(params={}) {
 
     // eslint-disable-next-line
     const [ isEncrypted, setIsEncrypted ] = useState(true)
-    const defaultFileType = 'txt'
+    const defaultFileType = 'loading'
     const [ fileType, _setFileType ] = useState(defaultFileType)
 
     function setFileType(v) {
@@ -123,9 +123,7 @@ export default function Viewer(params={}) {
                 setFileText(txt)
             }
         })
-    },
-    // eslint-disable-next-line
-    [ /* Intentionally no dependencies. */ ])
+    }, [ file ])
 
 
     useEffect(loadFile, [ file, loadFile ])
@@ -152,6 +150,10 @@ export default function Viewer(params={}) {
                 </RenderFileWithTitle>
         } else if (fileType === 'jsx') {
             return fileText
+        } else if (fileType === 'loading') {
+            return <div>
+                <h1 style={{color:"#a0a0a0", fontStyle: "italic"}}>Loading...</h1>
+            </div>
         } else {
             return <RenderFileWithTitle>
                 <pre>{fileText}</pre>
