@@ -1,4 +1,4 @@
-import Asciidoctor from "asciidoctor"
+import Asciidoctor from "@asciidoctor/core"
 
 export default function AsciidocRenderView(params={}) {
     const { text } = params
