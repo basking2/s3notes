@@ -32,9 +32,20 @@ nav.NavBar button {
     /* Add more styling for your button here */
 }
 
+nav.NavBar a.inline {
+    display: inline;
+    float: unset;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+
 /* Style adjustments for smaller screens */
 @media (max-width: 768px) {
-    nav.NavBar a {
+    nav.NavBar a,
+    nav.NavBar img,
+    nav.NavBar div,
+    nav.NavBar a.inline {
         display: none;
     }
 
@@ -42,8 +53,17 @@ nav.NavBar button {
         display: block;
     }
 
+    nav.NavBar.isOpen div {
+        display: inline-flex;
+    }
+
     /* If the menu is open, we'll display the links */
     nav.NavBar.isOpen a {
         display: block;
     }
+
+    nav.NavBar.isOpen a.inline {
+        display: inline;
+    }
+
 }

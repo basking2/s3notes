@@ -104,14 +104,14 @@ function NavBar() {
                     <a href="#/about">About</a>
                 </>}
 
-                <div>
+                <>
                     {/*Don't let key strokes escape this.  */}
-                    <Input defaultValue="file.txt" inputRef={fileRef} type="text" style={{background: "white"}} label="File" aria-label="File name."
+                    <Input id="quickFileOpen" defaultValue="file.txt" inputRef={fileRef} type="text" style={{background: "white"}} label="File" aria-label="File name."
                         onKeyDown={e => e.stopPropagation()}
                     ></Input>
-                    <Link style={{display: "inline", float: "unset"}} variant="contained" href="" onClick={handleEditViewClick("view")}>View</Link>
-                    <Link style={{display: "inline", float: "unset", margin: "1em"}} variant="contained" href="" onClick={handleEditViewClick("edit")}>Edit</Link>
-                </div>
+                    <Link className="NavBar isOpen inline" variant="contained" href="#" onClick={handleEditViewClick("view")}>View</Link>
+                    <Link className="NavBar isOpen inline" variant="contained" href="#" onClick={handleEditViewClick("edit")}>Edit</Link>
+                </>
 
             </nav>
     )
