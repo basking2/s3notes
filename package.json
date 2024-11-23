@@ -25,7 +25,8 @@
   "scripts": {
     "start": "react-scripts start",
     "buildinfo": "node scripts/buildinfo.js",
-    "build": "node scripts/buildinfo.js && react-scripts build",
+    "prebuild": "node scripts/buildinfo.js",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "s3": "node scripts/tests3.js",
