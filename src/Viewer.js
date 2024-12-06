@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import AsciidocRenderView from "./renderviews/AsciidocRenderView";
 import MarkdownRenderView from "./renderviews/MarkdownRenderView";
 import JSONRenderView from "./renderviews/JSONRenderView";
+import DecryptionError from "./storage/DecryptionError";
 
 export default function Viewer(params={}) {
 
@@ -116,6 +117,10 @@ export default function Viewer(params={}) {
                 if (txt) {
                     setFileText(txt)
                     setIsEncrypted(false)
+                } else if (err instanceof DecryptionError) {
+                    console.warn(`Failed to decrypt ${file}: ${err}`)
+                    setFileText(`# File ${file} cannot be decrypted.\n\n${err}`)
+                    setFileType("md")
                 } else {
                     console.error(err)
                 }
