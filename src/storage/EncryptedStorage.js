@@ -1,5 +1,6 @@
 const { DocCrypt } = require("@basking2/docryptjs")
 const StorageInterface = require("./StorageInterface")
+const DecryptionError = require("./DecryptionError")
 
 /**
  * Encrypt files, file names and all other options. Then pass that data on to another storage layer.
@@ -7,6 +8,7 @@ const StorageInterface = require("./StorageInterface")
  * To protect contents the meta object is always stored as another file.
  */
 class EncryptedStorage extends StorageInterface{
+
     constructor({password, storage}) {
         super()
 
@@ -83,7 +85,7 @@ class EncryptedStorage extends StorageInterface{
             }
             
             this.decryptObj(obj.meta || {})
-                .catch(e => ({}))
+                .catch(e => {throw new DecryptionError(e.message)})
                 .then(meta => JSON.parse(meta))
                 .then(meta => this.decryptObj(obj).then(txt => [meta, txt]))
                 .then(([meta, txt]) => callback(null, txt, meta))
