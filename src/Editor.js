@@ -5,6 +5,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Typography } from "@mui/material";
 import aceThemes from "./EditorComponent/aceEditorThemes";
+import DecryptionError from "./storage/DecryptionError";
 
 export default function Editor(params={}) {
 
@@ -145,6 +146,9 @@ export default function Editor(params={}) {
                 if (txt) {
                     setFileText(txt)
                     setIsEncrypted(false)
+                } else if (err instanceof DecryptionError) {
+                    console.warn(`Failed to decrypt ${file}: ${err}`)
+                    setFileText(`${err}`)
                 } else {
                     console.error(err)
                 }
