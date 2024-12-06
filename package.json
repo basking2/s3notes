@@ -27,6 +27,7 @@
     "buildinfo": "node scripts/buildinfo.js",
     "prebuild": "node scripts/buildinfo.js",
     "build": "react-scripts build",
+    "crypttool": "node ./scripts/crypttool.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "s3": "node scripts/tests3.js",

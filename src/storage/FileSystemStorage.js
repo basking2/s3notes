@@ -39,6 +39,10 @@ class FileSystemStorage extends StorageInterface {
                 return callback(err)
             }
 
+            if (text instanceof ArrayBuffer) {
+                text = Buffer.from(text)
+            }
+
             fs.writeFile(key, text, {}, callback)
         })
     }
@@ -59,7 +63,11 @@ class FileSystemStorage extends StorageInterface {
                 return callback(err, null)
             }
 
-            fs.readFile(key, {}, fileData => {
+            fs.readFile(key, {}, (err, fileData) => {
+                if (err) {
+                    return callback(err, null, null)
+                }
+
                 let [meta, data] = storagepack.unpack(fileData)
                 callback(null, data, meta)
             })
