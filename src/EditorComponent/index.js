@@ -17,20 +17,28 @@ const defaultTheme = 'Cloud9 Day'
 const defaultMode = 'Asciidoc'
 
 export default function EditorComponent(params={}) {
-    const {content, aceRef} = params
+    const {
+        // Initial text content.
+        content,
+
+        // How the parent element can touch the Ace Editor instance.
+        aceRef
+    } = params
 
     const theme = params.theme || defaultTheme
     const mode = params.mode || defaultMode
 
     let editor = null
     useEffect(() => {
-        editor = ace.edit("ace-editor");
-        editor.setTheme(aceThemes[theme])
-        editor.session.setMode(new aceModes[mode]())
-        editor.setValue(content)
+        if (mode in aceModes) {
+            editor = ace.edit("ace-editor");
+            editor.setTheme(aceThemes[theme])
+            editor.session.setMode(new aceModes[mode]())
+            editor.setValue(content)
 
-        if (aceRef) {
-            aceRef.current = editor
+            if (aceRef) {
+                aceRef.current = editor
+            }
         }
     })
 
@@ -41,7 +49,10 @@ export default function EditorComponent(params={}) {
         const bodyRect = document.body.getBoundingClientRect()
         const divRect = ref.current.getBoundingClientRect()
         const w = bodyRect.width - divRect.left //- (bodyRect.right - divRect.right)
-        const h = bodyRect.height - divRect.top //- (bodyRect.bottom - divRect.bottom)
+        let h = window.innerHeight - divRect.top //- (bodyRect.bottom - divRect.bottom)
+        if (h < 100) {
+            h = 100
+        }
         editorRef.current.style.width = `${w}px`
         editorRef.current.style.height = `${h}px`
         editor.resize()
