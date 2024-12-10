@@ -3,9 +3,19 @@ import EditorComponent from "./EditorComponent";
 import SettingsContext from "./settings/SettingsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import StorageFactory from "./storage/StorageFactory"
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Typography } from "@mui/material";
+import { Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Typography } from "@mui/material";
 import aceThemes from "./EditorComponent/aceEditorThemes";
 import DecryptionError from "./storage/DecryptionError";
+
+function IsModified({setValueRef}) {
+    const [ isModified, setIsModified ] = useState(false)
+
+    if (setValueRef) {
+        setValueRef.current = setIsModified
+    }
+
+    return <Chip value={isModified} aria-label="Is the document saved" label={isModified ? "Modified" : "Saved"}/>
+}
 
 export default function Editor(params={}) {
 
@@ -32,6 +42,7 @@ export default function Editor(params={}) {
 
     // eslint-disable-next-line
     const [ settings, setSettings ] = useContext(SettingsContext)
+
 
     const storage = StorageFactory.fromSettings(settings)
     const [ fileText, setFileText ] = useState()
@@ -60,6 +71,8 @@ export default function Editor(params={}) {
         }
     }
 
+    const setValueRef = useRef()
+
     function handleSave(event, text) {
         event.stopPropagation()
         event.preventDefault()
@@ -77,6 +90,8 @@ export default function Editor(params={}) {
             setSaving(false)
             if (err) {
                 console.error(err)
+            } else {
+                setValueRef.current(false)
             }
         })
     }
@@ -103,7 +118,10 @@ export default function Editor(params={}) {
     }
 
     function keyUpListener(event) {
-        //console.info("key up", event)
+        if (event.target.type === 'textarea' && event.target.className === 'ace_text-input') {
+            setValueRef.current(true)
+        }
+        // console.info("key up", event)
     }
     
     useEffect(() => {
@@ -127,7 +145,6 @@ export default function Editor(params={}) {
 
     useEffect(() => {
         storage.load(file, true, (err, txt, meta) => {
-
 
             if (meta) {
                 if ('filetype' in meta) {
@@ -234,6 +251,8 @@ export default function Editor(params={}) {
             handleSave(event, aceRef.current.getValue())
         } }>Save</Button>
         <Button variant="contained" style={{marginLeft:"1em"}} onClick={() => setAskDelete(true)}>Delete</Button>
+
+        <IsModified setValueRef={setValueRef} />
 
         <EditorComponent content={pickFileText()} aceRef={aceRef} mode={editorMode} theme={editorTheme}/>
 
