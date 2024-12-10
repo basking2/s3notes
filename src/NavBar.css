@@ -1,6 +1,7 @@
 
 nav.NavBar {
     background-color: #333;
+    border-right: 3px solid #cb7a00;
     overflow: hidden;
     max-width: 8em;
     display: inline-block;
@@ -38,7 +39,6 @@ nav.NavBar a.inline {
     margin-left: 0.5em;
     margin-right: 0.5em;
 }
-
 
 /* Style adjustments for smaller screens */
 @media (max-width: 768px) {
