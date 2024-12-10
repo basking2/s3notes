@@ -5,7 +5,7 @@ import SettingsContext from "./SettingsContext";
 
 export default function SettingsComponent(props = {}) {
 
-    const [settings, _] = useContext(SettingsContext)
+    const [settings] = useContext(SettingsContext)
 
     const fileRef = useRef()
 
