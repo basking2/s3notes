@@ -1,7 +1,7 @@
 
 nav.NavBar {
     background-color: #333;
-    border-right: 3px solid #cb7a00;
+    border-right: 1px solid black;
     overflow: hidden;
     max-width: 8em;
     display: inline-block;

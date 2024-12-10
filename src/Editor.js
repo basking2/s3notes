@@ -1,3 +1,4 @@
+import './Editor.css'
 import { Link, useLocation } from "react-router-dom";
 import EditorComponent from "./EditorComponent";
 import SettingsContext from "./settings/SettingsContext";
@@ -7,15 +8,22 @@ import { Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTit
 import aceThemes from "./EditorComponent/aceEditorThemes";
 import DecryptionError from "./storage/DecryptionError";
 
-function IsModified({setValueRef}) {
+function IsModified({setValueRef, getValueRef}) {
     const [ isModified, setIsModified ] = useState(false)
 
     if (setValueRef) {
         setValueRef.current = setIsModified
     }
+    if (getValueRef) {
+        getValueRef.current = () => isModified
+    }
 
     return <Chip value={isModified} aria-label="Is the document saved" label={isModified ? "Modified" : "Saved"}/>
 }
+
+// Local cache of the modifcation state of the AceEdtor.
+// This reduces computation after the first key stroke.
+let localIsModified = false
 
 export default function Editor(params={}) {
 
@@ -72,6 +80,7 @@ export default function Editor(params={}) {
     }
 
     const setValueRef = useRef()
+    const getValueRef = useRef()
 
     function handleSave(event, text) {
         event.stopPropagation()
@@ -92,6 +101,7 @@ export default function Editor(params={}) {
                 console.error(err)
             } else {
                 setValueRef.current(false)
+                localIsModified = false
             }
         })
     }
@@ -118,9 +128,6 @@ export default function Editor(params={}) {
     }
 
     function keyUpListener(event) {
-        if (event.target.type === 'textarea' && event.target.className === 'ace_text-input') {
-            setValueRef.current(true)
-        }
         // console.info("key up", event)
     }
     
@@ -172,6 +179,15 @@ export default function Editor(params={}) {
             } else {
                 setFileText(txt)
             }
+
+            aceRef.current.addEventListener("change", event => {
+                // If the command is not empty (that is, the user did it, 
+                // not a call to aceEditor.setValue(...)).
+                if (!localIsModified && Object.keys(aceRef.current.curOp.command).length > 0) {
+                    setValueRef.current(true)
+                    localIsModified = true
+                }
+            })
         })
 
     // eslint-disable-next-line
@@ -252,7 +268,7 @@ export default function Editor(params={}) {
         } }>Save</Button>
         <Button variant="contained" style={{marginLeft:"1em"}} onClick={() => setAskDelete(true)}>Delete</Button>
 
-        <IsModified setValueRef={setValueRef} />
+        <IsModified setValueRef={setValueRef} getValueRef={getValueRef}/>
 
         <EditorComponent content={pickFileText()} aceRef={aceRef} mode={editorMode} theme={editorTheme}/>
 

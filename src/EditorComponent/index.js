@@ -35,6 +35,7 @@ export default function EditorComponent(params={}) {
             editor.setTheme(aceThemes[theme])
             editor.session.setMode(new aceModes[mode]())
             editor.setValue(content)
+            editor.clearSelection()
 
             if (aceRef) {
                 aceRef.current = editor
