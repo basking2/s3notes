@@ -3,6 +3,7 @@ import ace from "ace-builds/src-noconflict/ace"
 
 // Include this so the search dialogue is bundled in the app.
 // Otherwise, ^-F throws an error.
+// eslint-disable-next-line
 import aceSearch from "ace-builds/src-noconflict/ext-searchbox"
 
 // Code syntax highlighting, etc.
@@ -28,10 +29,9 @@ export default function EditorComponent(params={}) {
     const theme = params.theme || defaultTheme
     const mode = params.mode || defaultMode
 
-    let editor = null
     useEffect(() => {
         if (mode in aceModes) {
-            editor = ace.edit("ace-editor");
+            const editor = ace.edit("ace-editor");
             editor.setTheme(aceThemes[theme])
             editor.session.setMode(new aceModes[mode]())
             editor.setValue(content)
@@ -56,7 +56,7 @@ export default function EditorComponent(params={}) {
         }
         editorRef.current.style.width = `${w}px`
         editorRef.current.style.height = `${h}px`
-        editor.resize()
+        aceRef.current.resize()
     }
 
     useEffect(() => {

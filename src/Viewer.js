@@ -128,6 +128,7 @@ export default function Viewer(params={}) {
                 setFileText(txt)
             }
         })
+    // eslint-disable-next-line
     }, [ file ])
 
 
