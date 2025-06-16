@@ -1,6 +1,6 @@
 {
   "name": "s3notes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@asciidoctor/core": "^3.0.4",
@@ -8,11 +8,11 @@
     "@basking2/docryptjs": "github:basking2/doccryptjs#main",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^5.16.7",
+    "@mui/icons-material": "^7.1.1",
+    "@mui/material": "^7.1.1",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "ace-builds": "https://github.com/ajaxorg/ace-builds#v1.36.2",
     "axios": "^1.8.3",
     "marked": "^14.1.3",
